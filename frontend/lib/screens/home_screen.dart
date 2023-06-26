@@ -103,10 +103,9 @@ class _HomeScreenState extends State<HomeScreen>
                                 InkWell(
                                   onTap: () {},
                                   child: const Text(
-                                    'See all >',
+                                    'See all',
                                     style: TextStyle(
                                         fontSize: 20,
-                                        decoration: TextDecoration.underline,
                                         color: Colors.blue),
                                   ),
                                 ),
@@ -425,10 +424,9 @@ class _HomeScreenState extends State<HomeScreen>
                                 InkWell(
                                   onTap: () {},
                                   child: const Text(
-                                    'See all >',
+                                    'See all',
                                     style: TextStyle(
                                         fontSize: 20,
-                                        decoration: TextDecoration.underline,
                                         color: Colors.blue),
                                   ),
                                 ),
@@ -495,10 +493,9 @@ class _HomeScreenState extends State<HomeScreen>
                                 InkWell(
                                   onTap: () {},
                                   child: const Text(
-                                    'See all >',
+                                    'See all',
                                     style: TextStyle(
                                         fontSize: 20,
-                                        decoration: TextDecoration.underline,
                                         color: Colors.blue),
                                   ),
                                 ),
