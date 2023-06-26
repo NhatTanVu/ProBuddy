@@ -1,5 +1,8 @@
 # ProBuddy
 A cross-platform mobile app for connecting individuals for fun and professional opportunities
+# Setup frontend
+1. Install [Flutter](https://docs.flutter.dev/get-started/install/windows)
+2. Open "**frontend**" folder on Android Studio and run the mobile app
 # Setup backend
 1. Install Python
 2. Open command line, and run:
