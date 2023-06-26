@@ -108,7 +108,7 @@ class _SignUpScreen1State extends State<SignUpScreen2> {
                           title: 'Previous',
                           backgroundColour: const Color(0xFF6750A4),
                           textColour: const Color(0xFFD0BCFF),
-                          height: 30,
+                          height: 40,
                           fontSize: 16,
                           onPressed: () {
                             Navigator.pushNamed(context, SignUpScreen1.id);
@@ -118,7 +118,7 @@ class _SignUpScreen1State extends State<SignUpScreen2> {
                           title: 'Finish',
                           backgroundColour: const Color(0xFF6750A4),
                           textColour: const Color(0xFFD0BCFF),
-                          height: 30,
+                          height: 40,
                           fontSize: 16,
                           onPressed: () {
                             Navigator.pushNamed(context, HomeScreen.id);

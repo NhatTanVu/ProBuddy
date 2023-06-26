@@ -33,8 +33,9 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                 margin: const EdgeInsets.all(18),
                 padding: const EdgeInsets.fromLTRB(35, 0, 35, 0),
                 decoration: BoxDecoration(
-                    color: const Color(0xFF1B1C1F),
-                    borderRadius: BorderRadius.circular(20)),
+                  color: const Color(0xFF1B1C1F),
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -184,7 +185,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                           title: 'Cancel',
                           backgroundColour: const Color(0xFF6750A4),
                           textColour: const Color(0xFFD0BCFF),
-                          height: 30,
+                          height: 40,
                           fontSize: 16,
                           onPressed: () {
                             Navigator.pushNamed(context, WelcomeScreen.id);
@@ -194,7 +195,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                           title: 'Next',
                           backgroundColour: const Color(0xFF6750A4),
                           textColour: const Color(0xFFD0BCFF),
-                          height: 30,
+                          height: 40,
                           fontSize: 16,
                           onPressed: () {
                             Navigator.pushNamed(context, SignUpScreen2.id);

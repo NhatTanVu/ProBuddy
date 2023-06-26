@@ -7,7 +7,7 @@ class RoundedButton extends StatelessWidget {
     required this.backgroundColour,
     required this.textColour,
     required this.onPressed,
-    this.height = 52.0,
+    this.height = 52,
     this.fontSize = 18,
   }) : super(key: key);
 
@@ -20,19 +20,20 @@ class RoundedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 5.0,
-      color: backgroundColour,
-      borderRadius: BorderRadius.circular(100.0),
-      child: MaterialButton(
-        onPressed: () => onPressed(),
-        minWidth: 100.0,
-        height: height,
-        child: Text(
-          title,
-          style: TextStyle(color: textColour, fontSize: fontSize),
-        ),
-      ),
+    return SizedBox(
+      width: 100,
+      height: height,
+      child: ElevatedButton(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all<Color>(textColour),
+            backgroundColor: MaterialStateProperty.all<Color>(backgroundColour),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                    side: BorderSide(color: backgroundColour))),
+          ),
+          onPressed: () => onPressed(),
+          child: Text(title, style: TextStyle(fontSize: fontSize))),
     );
   }
 }

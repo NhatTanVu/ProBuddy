@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
               color: Color(0xFFE6E6E6),
               fontSize: 16
             ),
-        )
+        ),
       ),
       routes: {
         WelcomeScreen.id: (context) => const WelcomeScreen(),
