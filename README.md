@@ -7,7 +7,7 @@ A cross-platform mobile app for connecting individuals for fun and professional 
 1. Install Python
 2. Open command line, and run:
 ```
-  1. cd backend\Pro_Buddy_API
+  1. cd backend\Pro_Buddy_APIs
   2. py -m venv env
   3. env\Scripts\activate
   4. pip install -r requirements.txt
