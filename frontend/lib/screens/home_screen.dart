@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../models/auth_user.dart';
+import '../services/auth_service.dart';
+import '../services/utility.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -14,11 +16,35 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int _selectedIndex = 0;
+  late AuthUser _currentUser;
+  late String _initials;
+  bool isLoading = false;
 
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      _currentUser = await AuthService.loadUser();
+      setState(() {
+        _initials = Utility.getInitials(
+            [_currentUser.firstName, _currentUser.lastName].join(" "));
+      });
+    } catch (error) {
+      print(error);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void _onItemTapped(int index) {
@@ -64,18 +90,21 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                           ),
                         ),
-                        const Positioned(
-                          right: 10,
-                          top: 5,
-                          child: Image(
-                            image: AssetImage(
-                              'images/3d_avatar_6.png',
-                            ),
-                            fit: BoxFit.fill,
-                            width: 40,
-                            height: 40,
-                          ),
-                        ),
+                        Positioned(
+                            right: 10,
+                            top: 5,
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Colors.white,
+                              child: CircleAvatar(
+                                radius: 18,
+                                backgroundColor: const Color(0xFF1c1b1f),
+                                child: Text(
+                                  _initials,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                            )),
                       ],
                     ),
                     const SizedBox(
@@ -105,8 +134,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   child: const Text(
                                     'See all',
                                     style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.blue),
+                                        fontSize: 20, color: Colors.blue),
                                   ),
                                 ),
                               ],
@@ -426,8 +454,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   child: const Text(
                                     'See all',
                                     style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.blue),
+                                        fontSize: 20, color: Colors.blue),
                                   ),
                                 ),
                               ],
@@ -495,8 +522,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   child: const Text(
                                     'See all',
                                     style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.blue),
+                                        fontSize: 20, color: Colors.blue),
                                   ),
                                 ),
                               ],

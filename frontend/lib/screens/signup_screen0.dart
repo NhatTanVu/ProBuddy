@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import '../components/rounded_button.dart';
 import '../components/rounded_textbox.dart';
 import '../models/auth_user.dart';
-import 'signup_screen0.dart';
-import 'signup_screen2.dart';
+import 'welcome_screen.dart';
+import 'signup_screen1.dart';
 
-class SignUpScreen1 extends StatefulWidget {
-  static const String id = 'signup_screen_1';
+class SignUpScreen0 extends StatefulWidget {
+  static const String id = 'signup_screen_0';
 
-  const SignUpScreen1({Key? key}) : super(key: key);
+  const SignUpScreen0({Key? key}) : super(key: key);
 
   @override
-  State<SignUpScreen1> createState() => _SignUpScreen1State();
+  State<SignUpScreen0> createState() => _SignUpScreen0State();
 }
 
-class _SignUpScreen1State extends State<SignUpScreen1> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
+class _SignUpScreen0State extends State<SignUpScreen0> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _retypePasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +27,9 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
     if (signUpUser == null) {
       signUpUser = AuthUser.fromEmpty();
     } else {
-      _emailController.text = signUpUser.email as String;
-      _firstNameController.text = signUpUser.firstName as String;
-      _lastNameController.text = signUpUser.lastName as String;
+      _usernameController.text = signUpUser.userName as String;
+      _passwordController.text = signUpUser.password as String;
+      _retypePasswordController.text = signUpUser.password as String;
     }
 
     return SafeArea(
@@ -60,7 +61,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Text(
-                            'Sign Up (continued)',
+                            'Sign Up',
                             style: TextStyle(fontSize: 25),
                           ),
                         ]),
@@ -75,8 +76,8 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                       height: 20,
                     ),
                     RoundedTextField(
-                      controller: _emailController,
-                      hintText: 'Email',
+                      controller: _usernameController,
+                      hintText: 'Username',
                       backgroundColour: const Color(0xFF49454F),
                       textColour: const Color(0xFFCAC4D0),
                       height: 40,
@@ -86,23 +87,25 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                       height: 20,
                     ),
                     RoundedTextField(
-                      controller: _firstNameController,
-                      hintText: 'First Name',
+                      controller: _passwordController,
+                      hintText: 'Password',
                       backgroundColour: const Color(0xFF49454F),
                       textColour: const Color(0xFFCAC4D0),
                       height: 40,
                       fontSize: 16,
+                      obscureText: true,
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     RoundedTextField(
-                      controller: _lastNameController,
-                      hintText: 'Last Name',
+                      controller: _retypePasswordController,
+                      hintText: 'Retype Password',
                       backgroundColour: const Color(0xFF49454F),
                       textColour: const Color(0xFFCAC4D0),
                       height: 40,
                       fontSize: 16,
+                      obscureText: true,
                     ),
                     const SizedBox(
                       height: 20,
@@ -111,17 +114,13 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         RoundedButton(
-                          title: 'Previous',
+                          title: 'Cancel',
                           backgroundColour: const Color(0xFF6750A4),
                           textColour: const Color(0xFFD0BCFF),
                           height: 40,
                           fontSize: 16,
                           onPressed: () {
-                            signUpUser?.email = _emailController.text;
-                            signUpUser?.firstName = _firstNameController.text;
-                            signUpUser?.lastName = _lastNameController.text;
-                            Navigator.pushNamed(context, SignUpScreen0.id,
-                                arguments: signUpUser);
+                            Navigator.pushNamed(context, WelcomeScreen.id);
                           },
                         ),
                         RoundedButton(
@@ -131,10 +130,9 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                           height: 40,
                           fontSize: 16,
                           onPressed: () {
-                            signUpUser?.email = _emailController.text;
-                            signUpUser?.firstName = _firstNameController.text;
-                            signUpUser?.lastName = _lastNameController.text;
-                            Navigator.pushNamed(context, SignUpScreen2.id,
+                            signUpUser?.userName = _usernameController.text;
+                            signUpUser?.password = _passwordController.text;
+                            Navigator.pushNamed(context, SignUpScreen1.id,
                                 arguments: signUpUser);
                           },
                         )

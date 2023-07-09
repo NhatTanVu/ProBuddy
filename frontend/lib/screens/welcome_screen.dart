@@ -1,14 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:pro_buddy/components/rounded_textbox.dart';
-import 'package:pro_buddy/screens/signup_screen1.dart';
-
+import '../components/rounded_textbox.dart';
 import '../components/rounded_button.dart';
+import '../components/auth_button.dart';
+import '../models/auth_user.dart';
 import 'home_screen.dart';
+import 'signup_screen0.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   static const String id = 'welcome_screen';
 
   const WelcomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String _message = '';
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleAuthenticationSuccessfulResult(AuthUser authUser) {
+    Navigator.pushNamed(context, HomeScreen.id);
+  }
+
+  void _handleAuthenticationFailedResult(String message) {
+    setState(() {
+      _message = message;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +60,19 @@ class WelcomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       RoundedTextField(
-                          hintText: 'Email',
+                          controller: _usernameController,
+                          hintText: 'Username',
+                          height: 50,
                           backgroundColour: const Color(0xFF49454F),
                           textColour: const Color(0xFFCAC4D0),
-                          icon: Icons.email_rounded),
+                          icon: Icons.person),
                       const SizedBox(
                         height: 21,
                       ),
                       RoundedTextField(
+                        controller: _passwordController,
                         hintText: 'Password',
+                        height: 50,
                         backgroundColour: const Color(0xFF49454F),
                         textColour: const Color(0xFFCAC4D0),
                         icon: Icons.lock,
@@ -50,13 +81,29 @@ class WelcomeScreen extends StatelessWidget {
                       const SizedBox(
                         height: 21,
                       ),
-                      RoundedButton(
-                        title: 'Sign In',
-                        backgroundColour: const Color(0xFFd0bcff),
-                        textColour: const Color(0xFF381E72),
-                        onPressed: () {
-                          Navigator.pushNamed(context, HomeScreen.id);
-                        },
+                      AuthButton(
+                        usernameController: _usernameController,
+                        passwordController: _passwordController,
+                        onAuthenticationSuccessfulResult:
+                            _handleAuthenticationSuccessfulResult,
+                        onAuthenticationFailedResult:
+                            _handleAuthenticationFailedResult,
+                      ),
+                      Visibility(
+                        visible: _message != "",
+                        child: const SizedBox(height: 14.0),
+                      ),
+                      Center(
+                        child: Visibility(
+                          visible: _message != "",
+                          child: Text(
+                            _message,
+                            style: const TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         height: 14,
@@ -82,7 +129,8 @@ class WelcomeScreen extends StatelessWidget {
                                   backgroundColor: const Color(0xFF1c1b1f),
                                   child: Text(
                                     'or',
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -105,7 +153,7 @@ class WelcomeScreen extends StatelessWidget {
                         backgroundColour: const Color(0xFFd0bcff),
                         textColour: const Color(0xFF381E72),
                         onPressed: () {
-                          Navigator.pushNamed(context, SignUpScreen1.id);
+                          Navigator.pushNamed(context, SignUpScreen0.id);
                         },
                       ),
                     ]),

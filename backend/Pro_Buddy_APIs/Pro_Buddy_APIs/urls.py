@@ -17,14 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
     TokenRefreshView,
 )
-from users.views import UserAPIView
+from users.views import SignUpUserAPIView, LoginUserAPIView, UserRetrieveAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/user/', UserAPIView.as_view(), name="user"),
+    path('api/login', LoginUserAPIView.as_view(), name='login_user'),
+    path('api/signup', SignUpUserAPIView.as_view(), name="sign_up_user"),
+    path('api/users/<int:id>/', UserRetrieveAPIView.as_view(), name='user_retrieve'),
 ]
