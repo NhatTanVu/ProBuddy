@@ -3,11 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/auth_user.dart';
 import 'config.dart';
 
-class AuthService {
+class AuthServices {
   static const String baseUrl = Config.apiEndpoint;
 
   static Future<AuthUser> login(String username, String password) async {
-    final loginUrl = Uri.parse("$baseUrl/login");
+    final loginUrl = Uri.parse("$baseUrl/user/login");
 
     http.Response response = await http
         .post(loginUrl, body: {'username': username, 'password': password});
@@ -26,7 +26,7 @@ class AuthService {
   }
 
   static Future<bool> signUp(AuthUser signupUser) async {
-    final signUpUrl = Uri.parse('$baseUrl/signup');
+    final signUpUrl = Uri.parse('$baseUrl/user/signup');
     final response = await http.post(
       signUpUrl,
       body: signupUser.toJson(),

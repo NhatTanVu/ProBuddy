@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:intl/intl.dart';
 
 class AuthUser {
@@ -70,8 +69,8 @@ class AuthUser {
   String toJson() {
     Map<String, Object?> obj = {
       'id': userId,
-      'jwt_token': jwtToken,
-      'refresh_token': refreshToken,
+      'access': jwtToken,
+      'refresh': refreshToken,
       'username': userName,
       'password': password,
       'first_name': firstName,

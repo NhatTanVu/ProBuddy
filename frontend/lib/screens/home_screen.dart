@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../components/clickable_row.dart';
 import '../models/auth_user.dart';
-import '../services/auth_service.dart';
+import '../services/auth_services.dart';
 import '../services/utility.dart';
+import 'create_group.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -33,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen>
     });
 
     try {
-      _currentUser = await AuthService.loadUser();
+      _currentUser = await AuthServices.loadUser();
       setState(() {
         _initials = Utility.getInitials(
             [_currentUser.firstName, _currentUser.lastName].join(" "));
@@ -439,74 +441,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Online Buddies',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: const Text(
-                                    'See all',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.blue),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: const [
-                                Image(
-                                  image: AssetImage(
-                                    'images/3d_avatar_1.png',
-                                  ),
-                                  fit: BoxFit.fill,
-                                  width: 50,
-                                  height: 50,
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Image(
-                                  image: AssetImage(
-                                    'images/3d_avatar_6.png',
-                                  ),
-                                  fit: BoxFit.fill,
-                                  width: 50,
-                                  height: 50,
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Image(
-                                  image: AssetImage(
-                                    'images/3d_avatar_9.png',
-                                  ),
-                                  fit: BoxFit.fill,
-                                  width: 50,
-                                  height: 50,
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Image(
-                                  image: AssetImage(
-                                    'images/3d_avatar_29.png',
-                                  ),
-                                  fit: BoxFit.fill,
-                                  width: 50,
-                                  height: 50,
-                                ),
-                              ],
-                            ),
+
                             const SizedBox(
                               height: 20,
                             ),
@@ -683,6 +618,19 @@ class _HomeScreenState extends State<HomeScreen>
                                 ),
                               ],
                             ),
+
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ClickableRow(
+                              title: 'Start a new group',
+                              subtitle: 'Organize your own events',
+                              leadingIcon: Icons.group_add,
+                              onTap: () {
+                                Navigator.pushNamed(context, CreateGroupScreen.id);
+                              },
+                            ),
+
                             const SizedBox(
                               height: 20,
                             ),

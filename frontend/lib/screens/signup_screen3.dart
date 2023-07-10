@@ -6,7 +6,7 @@ import 'package:pro_buddy/components/rounded_button.dart';
 import 'signup_screen2.dart';
 import 'home_screen.dart';
 import '../models/auth_user.dart';
-import '../services/auth_service.dart';
+import '../services/auth_services.dart';
 
 class SignUpScreen3 extends StatefulWidget {
   static const String id = 'signup_screen_3';
@@ -32,10 +32,10 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
   late List<String> _selectedServices;
   String _message = "";
 
-  Future<void> _signUpUser(AuthUser? signUpUser, BuildContext context) async {
+  void _signUpUser(AuthUser? signUpUser, BuildContext context) async {
     try {
-      await AuthService.signUp(signUpUser as AuthUser);
-      await AuthService.login(signUpUser?.userName as String, signUpUser?.password as String);
+      await AuthServices.signUp(signUpUser as AuthUser);
+      await AuthServices.login(signUpUser?.userName as String, signUpUser?.password as String);
       Navigator.pushNamed(context, HomeScreen.id);
     } on Exception catch (e, _) {
       setState(() {

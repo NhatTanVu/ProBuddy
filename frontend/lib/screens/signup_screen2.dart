@@ -99,9 +99,13 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                             leading: Radio(
                               fillColor: MaterialStateColor.resolveWith(
                                   (states) => const Color(0xFFE6E6E6)),
-                              value: 'Female',
-                              groupValue: 'grpGender',
-                              onChanged: (value) {},
+                              value: 'F',
+                              groupValue: _gender,
+                              onChanged: (value) {
+                                setState(() {
+                                  _gender = value!;
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -121,9 +125,13 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                             leading: Radio(
                               fillColor: MaterialStateColor.resolveWith(
                                   (states) => const Color(0xFFE6E6E6)),
-                              value: 'Male',
-                              groupValue: 'grpGender',
-                              onChanged: (value) {},
+                              value: 'M',
+                              groupValue: _gender,
+                              onChanged: (value) {
+                                setState(() {
+                                  _gender = value!;
+                                });
+                              },
                             ),
                           ),
                         ),

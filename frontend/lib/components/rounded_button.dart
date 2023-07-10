@@ -9,6 +9,7 @@ class RoundedButton extends StatelessWidget {
     required this.onPressed,
     this.height = 52,
     this.fontSize = 18,
+    this.width = 100,
   }) : super(key: key);
 
   final Color backgroundColour;
@@ -16,12 +17,13 @@ class RoundedButton extends StatelessWidget {
   final String title;
   final Function onPressed;
   final double height;
+  final double width;
   final double fontSize;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 100,
+      width: width,
       height: height,
       child: ElevatedButton(
           style: ButtonStyle(

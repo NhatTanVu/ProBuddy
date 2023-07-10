@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/auth_user.dart';
-import '../services/auth_service.dart';
+import '../services/auth_services.dart';
 import 'rounded_button.dart';
 
 class AuthButton extends StatefulWidget {
@@ -24,7 +24,7 @@ class AuthButton extends StatefulWidget {
 class _AuthButtonState extends State<AuthButton> {
   Future<void> _authenticateUser(BuildContext context) async {
     try {
-      widget.onAuthenticationSuccessfulResult(await AuthService.login(
+      widget.onAuthenticationSuccessfulResult(await AuthServices.login(
           widget.usernameController.text, widget.passwordController.text));
     } on Exception catch (e, _) {
       widget.onAuthenticationFailedResult(
