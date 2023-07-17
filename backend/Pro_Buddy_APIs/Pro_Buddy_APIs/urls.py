@@ -19,7 +19,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
-from buddies.views import CreateBuddyGroupAPIView
+from buddies.views import CreateBuddyGroupAPIView, ViewBuddyGroupsByUserIdAPIView, ViewBuddyGroupAPIView
 from users.views import SignUpUserAPIView, LoginUserAPIView, UserRetrieveAPIView
 
 urlpatterns = [
@@ -27,6 +27,8 @@ urlpatterns = [
     path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/user/login', LoginUserAPIView.as_view(), name='user_login'),
     path('api/user/signup', SignUpUserAPIView.as_view(), name="user_sign_up"),
-    path('api/user/<int:id>', UserRetrieveAPIView.as_view(), name='user_retrieve'),
-    path('api/buddy/create_buddy_group', CreateBuddyGroupAPIView.as_view(), name="buddy_create_buddy_group"),
+    path('api/user/<int:id>', UserRetrieveAPIView.as_view(), name='user_view_by_id'),
+    path('api/buddy/group/create', CreateBuddyGroupAPIView.as_view(), name="buddy_create_group"),
+    path('api/buddy/groups/view/<int:user_id>', ViewBuddyGroupsByUserIdAPIView.as_view(), name='buddy_view_groups_by_user_id'),
+    path('api/buddy/group/<int:id>', ViewBuddyGroupAPIView.as_view(), name='buddy_view_group_by_id'),
 ]

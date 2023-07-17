@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/create_group.dart';
+import 'screens/view_group.dart';
 import 'screens/home_screen.dart';
 import 'screens/signup_screen0.dart';
 import 'screens/signup_screen1.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         SignUpScreen3.id: (context) => const SignUpScreen3(),
         HomeScreen.id: (context) => const HomeScreen(),
         CreateGroupScreen.id: (context) => const CreateGroupScreen(),
+        ViewGroupScreen.id: (context) => const ViewGroupScreen(),
       },
     );
   }

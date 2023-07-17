@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import '../components/clickable_row.dart';
 import '../models/auth_user.dart';
+import '../models/buddy_group.dart';
 import '../services/auth_services.dart';
+import '../services/config.dart';
 import '../services/utility.dart';
+import '../services/buddy_services.dart';
 import 'create_group.dart';
+import 'view_group.dart';
+import 'welcome_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -19,7 +24,8 @@ class _HomeScreenState extends State<HomeScreen>
   TabController? _tabController;
   int _selectedIndex = 0;
   late AuthUser _currentUser;
-  late String _initials;
+  late String _initials = '';
+  late List<BuddyGroup> _buddyGroups = [];
   bool isLoading = false;
 
   @override
@@ -36,12 +42,17 @@ class _HomeScreenState extends State<HomeScreen>
 
     try {
       _currentUser = await AuthServices.loadUser();
+      var groups = await BuddyServices.viewGroupsByUserId(
+          _currentUser.userId!, _currentUser.jwtToken!);
       setState(() {
         _initials = Utility.getInitials(
             [_currentUser.firstName, _currentUser.lastName].join(" "));
+        _buddyGroups = groups.take(2).toList();
       });
     } catch (error) {
-      print(error);
+      if (error.toString() == Config.unauthorizedExceptionMessage) {
+        Navigator.pushNamed(context, WelcomeScreen.id);
+      }
     } finally {
       setState(() {
         isLoading = false;
@@ -441,7 +452,6 @@ class _HomeScreenState extends State<HomeScreen>
                                 ),
                               ],
                             ),
-
                             const SizedBox(
                               height: 20,
                             ),
@@ -467,102 +477,60 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                             Row(
                               children: [
-                                Expanded(
-                                  child: Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: AssetImage(
-                                              "images/chat_gpt_experts.jpg"),
-                                        ),
+                                for (var group in _buddyGroups)
+                                  Expanded(
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10),
                                       ),
-                                      height: 140,
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            bottom: 0,
-                                            left: 0,
-                                            right: 0,
-                                            child: Container(
-                                              color: const Color(0xAA1C1B19),
-                                              padding: const EdgeInsets.all(5),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: const <Widget>[
-                                                  Text(
-                                                    'Vancouver ChatGPT Experts',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 3,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  )
-                                                ],
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Navigator.pushNamed(context, ViewGroupScreen.id, arguments: group);
+                                        },
+                                        child: Container(
+                                          height: 140,
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  height: 70,
+                                                  color:
+                                                      const Color(0xAA1C1B19),
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        group.name!,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 3,
+                                                        style: const TextStyle(
+                                                            fontSize: 16),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: AssetImage(
-                                              "images/friendship.jpg"),
-                                        ),
-                                      ),
-                                      height: 140,
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            bottom: 0,
-                                            left: 0,
-                                            right: 0,
-                                            child: Container(
-                                              color: const Color(0xAA1C1B19),
-                                              padding: const EdgeInsets.all(5),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: const <Widget>[
-                                                  Text(
-                                                    'Personal Development and Friendship Coaching Online',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 3,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
                                 Expanded(
                                   child: Card(
                                     clipBehavior: Clip.antiAlias,
@@ -616,9 +584,12 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                                   ),
                                 ),
+                                Expanded(
+                                  flex: (2 - _buddyGroups.length),
+                                  child: Container(),
+                                ),
                               ],
                             ),
-
                             const SizedBox(
                               height: 20,
                             ),
@@ -627,10 +598,10 @@ class _HomeScreenState extends State<HomeScreen>
                               subtitle: 'Organize your own events',
                               leadingIcon: Icons.group_add,
                               onTap: () {
-                                Navigator.pushNamed(context, CreateGroupScreen.id);
+                                Navigator.pushNamed(
+                                    context, CreateGroupScreen.id);
                               },
                             ),
-
                             const SizedBox(
                               height: 20,
                             ),

@@ -5,8 +5,13 @@ from .models import BuddyGroup
 
 
 class CreateBuddyGroupSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = BuddyGroup
         fields = ('id', 'name', 'description', 'user', 'created_date')
         extra_kwargs = {'user': {'required': True}}
+
+
+class ViewBuddyGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuddyGroup
+        fields = ('id', 'name', 'description')

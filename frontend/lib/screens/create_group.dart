@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import '../services/config.dart';
 import '../components/rounded_button.dart';
 import '../components/rounded_multiline_textbox.dart';
 import '../components/rounded_textbox.dart';
 import '../models/auth_user.dart';
 import '../services/buddy_services.dart';
 import '../services/auth_services.dart';
+import 'home_screen.dart';
+import 'welcome_screen.dart';
 
 class CreateGroupScreen extends StatefulWidget {
   static const String id = 'create_group';
@@ -40,9 +42,13 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
       _descriptionController.clear();
       Navigator.pushNamed(context, HomeScreen.id);
     } on Exception catch (e, _) {
-      setState(() {
-        _message = e.toString().replaceAll("Exception: ", "");
-      });
+      if (e.toString() == Config.unauthorizedExceptionMessage) {
+        Navigator.pushNamed(context, WelcomeScreen.id);
+      } else {
+        setState(() {
+          _message = e.toString().replaceAll("Exception: ", "");
+        });
+      }
     }
   }
 
