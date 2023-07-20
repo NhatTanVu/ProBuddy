@@ -7,6 +7,8 @@ import 'screens/signup_screen1.dart';
 import 'screens/signup_screen2.dart';
 import 'screens/signup_screen3.dart';
 import 'screens/welcome_screen.dart';
+import 'screens/create_group_event1.dart';
+import 'screens/create_group_event2.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
         HomeScreen.id: (context) => const HomeScreen(),
         CreateGroupScreen.id: (context) => const CreateGroupScreen(),
         ViewGroupScreen.id: (context) => const ViewGroupScreen(),
+        CreateGroupEventScreen1.id: (context) => const CreateGroupEventScreen1(),
+        CreateGroupEventScreen2.id: (context) => const CreateGroupEventScreen2(),
       },
     );
   }

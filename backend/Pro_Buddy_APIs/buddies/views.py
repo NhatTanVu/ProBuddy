@@ -1,6 +1,6 @@
 from rest_framework import generics
-from buddies.models import BuddyGroup
-from buddies.serializers import CreateBuddyGroupSerializer, ViewBuddyGroupSerializer
+from buddies.models import *
+from buddies.serializers import *
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -24,5 +24,11 @@ class ViewBuddyGroupAPIView(generics.RetrieveAPIView):
     queryset = BuddyGroup.objects.all()
     serializer_class = ViewBuddyGroupSerializer
     lookup_field = 'id'
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class CreateBuddyGroupEventAPIView(generics.CreateAPIView):
+    queryset = BuddyGroupEvent.objects.all()
+    serializer_class = CreateBuddyGroupEventSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

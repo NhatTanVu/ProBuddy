@@ -6,17 +6,29 @@ import 'rounded_textbox.dart';
 class DateTimePicker extends StatefulWidget {
   const DateTimePicker({
     Key? key,
+    required this.hintText,
     required this.controller,
   }) : super(key: key);
 
   final TextEditingController controller;
+  final String hintText;
 
   @override
   DateTimePickerState createState() => DateTimePickerState();
 }
 
 class DateTimePickerState extends State<DateTimePicker> {
-  DateTime selectedDate = DateTime(DateTime.now().year - 20, DateTime.now().month, DateTime.now().day);
+  DateTime? selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.controller.text != "") {
+      selectedDate = DateFormat('yyyy-MM-dd').parse(widget.controller.text);
+    } else {
+      selectedDate = DateTime.now();
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showCupertinoModalPopup<DateTime>(
@@ -59,7 +71,7 @@ class DateTimePickerState extends State<DateTimePicker> {
     if (pickedDate != null) {
       setState(() {
         selectedDate = pickedDate;
-        widget.controller.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+        widget.controller.text = DateFormat('yyyy-MM-dd').format(selectedDate!);
       });
     }
   }
@@ -72,7 +84,7 @@ class DateTimePickerState extends State<DateTimePicker> {
         RoundedTextField(
           controller: widget.controller,
           readOnly: true,
-          hintText: 'Date Of Birth',
+          hintText: widget.hintText,
           backgroundColour: const Color(0xFF49454F),
           textColour: const Color(0xFFCAC4D0),
           height: 40,
@@ -86,7 +98,7 @@ class DateTimePickerState extends State<DateTimePicker> {
           iconSize: 24,
           tooltip: 'Tap to open date picker',
           onPressed: () => _selectDate(context),
-        )
+        ),
       ],
     );
   }

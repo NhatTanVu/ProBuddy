@@ -1,45 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pro_buddy/models/buddy_group_event.dart';
 import '../services/config.dart';
 import '../components/rounded_button.dart';
 import '../components/rounded_multiline_textbox.dart';
-import '../components/rounded_textbox.dart';
+import '../components/date_time_picker.dart';
 import '../models/auth_user.dart';
 import '../services/buddy_services.dart';
 import '../services/auth_services.dart';
+import 'create_group_event1.dart';
 import 'home_screen.dart';
 import 'welcome_screen.dart';
 
-class CreateGroupScreen extends StatefulWidget {
-  static const String id = 'create_group';
+class CreateGroupEventScreen2 extends StatefulWidget {
+  static const String id = 'create_group_event_2';
 
-  const CreateGroupScreen({super.key});
+  const CreateGroupEventScreen2({super.key});
 
   @override
-  CreateGroupScreenState createState() => CreateGroupScreenState();
+  CreateGroupEventScreen2State createState() => CreateGroupEventScreen2State();
 }
 
-class CreateGroupScreenState extends State<CreateGroupScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+class CreateGroupEventScreen2State extends State<CreateGroupEventScreen2> {
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+
   String _message = "";
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _descriptionController.dispose();
+    _startDateController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 
-  void _createGroup() async {
-    String name = _nameController.text;
-    String description = _descriptionController.text;
+  void _createGroupEvent(BuddyGroupEvent event) async {
+    DateTime startDate =
+        DateFormat('yyyy-MM-dd').parse(_startDateController.text);
+    String location = _locationController.text;
     AuthUser currentUser = await AuthServices.loadUser();
+    event.startDate = startDate;
+    event.location = location;
+    event.createdBy = currentUser.userId;
 
     try {
-      await BuddyServices.createGroup(
-          name, description, currentUser.userId!, currentUser.jwtToken!);
-      _nameController.clear();
-      _descriptionController.clear();
+      await BuddyServices.createGroupEvent(event, currentUser.jwtToken!);
+      _startDateController.clear();
+      _locationController.clear();
       Navigator.pushNamed(context, HomeScreen.id);
     } on Exception catch (e, _) {
       if (e.toString() == Config.unauthorizedExceptionMessage) {
@@ -54,6 +61,18 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    BuddyGroupEvent? event =
+        ModalRoute.of(context)?.settings.arguments as BuddyGroupEvent?;
+    if (event == null) {
+      event = BuddyGroupEvent.fromEmpty();
+    } else {
+      if (event.startDate != null) {
+        _startDateController.text =
+            DateFormat('yyyy-MM-dd').format(event.startDate as DateTime);
+      }
+      _locationController.text = event.location as String;
+    }
+
     return SafeArea(
       child: Scaffold(
         body: Column(children: [
@@ -76,7 +95,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Text(
-                          'Create Group',
+                          'Create Event (continued)',
                           style: TextStyle(fontSize: 25),
                         ),
                       ]),
@@ -90,20 +109,16 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  RoundedTextField(
-                    controller: _nameController,
-                    hintText: 'Name',
-                    backgroundColour: const Color(0xFF49454F),
-                    textColour: const Color(0xFFCAC4D0),
-                    height: 40,
-                    fontSize: 16,
+                  DateTimePicker(
+                    hintText: 'Start Date',
+                    controller: _startDateController,
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   RoundedMultiLineTextField(
-                    controller: _descriptionController,
-                    hintText: 'Description',
+                    controller: _locationController,
+                    hintText: 'Location',
                     backgroundColour: const Color(0xFF49454F),
                     textColour: const Color(0xFFCAC4D0),
                     height: 120,
@@ -116,25 +131,30 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       RoundedButton(
-                        title: 'Cancel',
+                        title: 'Previous',
                         backgroundColour: const Color(0xFF6750A4),
                         textColour: const Color(0xFFD0BCFF),
                         height: 40,
                         fontSize: 16,
                         onPressed: () {
-                          _nameController.clear();
-                          _descriptionController.clear();
-                          Navigator.pushNamed(context, HomeScreen.id);
+                          event?.startDate = (_startDateController.text != "")
+                              ? DateFormat('yyyy-MM-dd')
+                                  .parse(_startDateController.text)
+                              : null;
+                          event?.location = _locationController.text;
+                          Navigator.pushNamed(
+                              context, CreateGroupEventScreen1.id,
+                              arguments: event);
                         },
                       ),
                       RoundedButton(
-                        title: 'Create Group',
+                        title: 'Create Event',
                         backgroundColour: const Color(0xFF6750A4),
                         textColour: const Color(0xFFD0BCFF),
                         height: 40,
                         fontSize: 16,
                         width: 130,
-                        onPressed: () => _createGroup(),
+                        onPressed: () => _createGroupEvent(event!),
                       ),
                     ],
                   ),

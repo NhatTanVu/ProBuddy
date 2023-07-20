@@ -138,6 +138,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                       ],
                     ),
                     DateTimePicker(
+                      hintText: 'Date of Birth',
                       controller: _dobController,
                     ),
                     const SizedBox(
@@ -165,8 +166,10 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                           fontSize: 16,
                           onPressed: () {
                             signUpUser?.address = _addressController.text;
-                            signUpUser?.dob = DateFormat('yyyy-MM-dd')
-                                .parse(_dobController.text);
+                            signUpUser?.dob = _dobController.text != ""
+                                ? DateFormat('yyyy-MM-dd')
+                                    .parse(_dobController.text)
+                                : null;
                             signUpUser?.gender = _gender;
                             Navigator.pushNamed(context, SignUpScreen1.id,
                                 arguments: signUpUser);
@@ -180,8 +183,10 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                           fontSize: 16,
                           onPressed: () {
                             signUpUser?.address = _addressController.text;
-                            signUpUser?.dob = DateFormat('yyyy-MM-dd')
-                                .parse(_dobController.text);
+                            signUpUser?.dob = _dobController.text != ""
+                                ? DateFormat('yyyy-MM-dd')
+                                    .parse(_dobController.text)
+                                : null;
                             signUpUser?.gender = _gender;
                             Navigator.pushNamed(context, SignUpScreen3.id,
                                 arguments: signUpUser);

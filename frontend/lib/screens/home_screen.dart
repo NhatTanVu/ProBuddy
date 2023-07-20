@@ -491,7 +491,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         onTap: () {
                                           Navigator.pushNamed(context, ViewGroupScreen.id, arguments: group);
                                         },
-                                        child: Container(
+                                        child: SizedBox(
                                           height: 140,
                                           child: Stack(
                                             children: [

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/buddy_group.dart';
 import 'home_screen.dart';
+import 'create_group_event1.dart';
 import '../components/rounded_button.dart';
-import '../models/auth_user.dart';
-import '../services/buddy_services.dart';
-import '../services/auth_services.dart';
 
 class ViewGroupScreen extends StatefulWidget {
   static const String id = 'view_group';
@@ -39,33 +37,24 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                     height: 10,
                   ),
                   Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'View Group',
-                          style: TextStyle(fontSize: 25),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Text(
+                          group.name!,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                      ]),
+                      ),
+                    ],
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
                   const Divider(
                     color: Color(0xFFE6E6E6),
                     thickness: 1,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: Text(
-                          group.name!,
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
                   ),
                   const SizedBox(
                     height: 20,
@@ -84,7 +73,7 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                     height: 20,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       RoundedButton(
                         title: 'Go Back',
@@ -94,6 +83,17 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                         fontSize: 16,
                         onPressed: () {
                           Navigator.pushNamed(context, HomeScreen.id);
+                        },
+                      ),
+                      RoundedButton(
+                        title: 'Create Event',
+                        backgroundColour: const Color(0xFF6750A4),
+                        textColour: const Color(0xFFD0BCFF),
+                        height: 40,
+                        width: 130,
+                        fontSize: 16,
+                        onPressed: () {
+                          Navigator.pushNamed(context, CreateGroupEventScreen1.id, arguments: group.groupId);
                         },
                       ),
                     ],

@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
-import '../services/config.dart';
+import 'package:pro_buddy/models/buddy_group_event.dart';
 import '../components/rounded_button.dart';
 import '../components/rounded_multiline_textbox.dart';
 import '../components/rounded_textbox.dart';
-import '../models/auth_user.dart';
-import '../services/buddy_services.dart';
-import '../services/auth_services.dart';
+import 'create_group_event2.dart';
 import 'home_screen.dart';
-import 'welcome_screen.dart';
 
-class CreateGroupScreen extends StatefulWidget {
-  static const String id = 'create_group';
+class CreateGroupEventScreen1 extends StatefulWidget {
+  static const String id = 'create_group_event_1';
 
-  const CreateGroupScreen({super.key});
+  const CreateGroupEventScreen1({super.key});
 
   @override
-  CreateGroupScreenState createState() => CreateGroupScreenState();
+  CreateGroupEventScreen1State createState() => CreateGroupEventScreen1State();
 }
 
-class CreateGroupScreenState extends State<CreateGroupScreen> {
+class CreateGroupEventScreen1State extends State<CreateGroupEventScreen1> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  String _message = "";
 
   @override
   void dispose() {
@@ -30,30 +26,25 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
     super.dispose();
   }
 
-  void _createGroup() async {
-    String name = _nameController.text;
-    String description = _descriptionController.text;
-    AuthUser currentUser = await AuthServices.loadUser();
-
-    try {
-      await BuddyServices.createGroup(
-          name, description, currentUser.userId!, currentUser.jwtToken!);
-      _nameController.clear();
-      _descriptionController.clear();
-      Navigator.pushNamed(context, HomeScreen.id);
-    } on Exception catch (e, _) {
-      if (e.toString() == Config.unauthorizedExceptionMessage) {
-        Navigator.pushNamed(context, WelcomeScreen.id);
-      } else {
-        setState(() {
-          _message = e.toString().replaceAll("Exception: ", "");
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    int? groupId;
+    BuddyGroupEvent? event;
+
+    if (ModalRoute.of(context)?.settings.arguments is int?) {
+      groupId = ModalRoute.of(context)?.settings.arguments as int?;
+    } else if (ModalRoute.of(context)?.settings.arguments is BuddyGroupEvent?) {
+      event = ModalRoute.of(context)?.settings.arguments as BuddyGroupEvent?;
+    }
+
+    if (event == null) {
+      event = BuddyGroupEvent.fromEmpty();
+      event.buddyGroup = groupId;
+    } else {
+      _nameController.text = event.name as String;
+      _descriptionController.text = event.description as String;
+    }
+
     return SafeArea(
       child: Scaffold(
         body: Column(children: [
@@ -76,7 +67,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Text(
-                          'Create Group',
+                          'Create Event',
                           style: TextStyle(fontSize: 25),
                         ),
                       ]),
@@ -128,33 +119,20 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
                         },
                       ),
                       RoundedButton(
-                        title: 'Create Group',
+                        title: 'Next',
                         backgroundColour: const Color(0xFF6750A4),
                         textColour: const Color(0xFFD0BCFF),
                         height: 40,
                         fontSize: 16,
-                        width: 130,
-                        onPressed: () => _createGroup(),
+                        onPressed: () {
+                          event?.name = _nameController.text;
+                          event?.description = _descriptionController.text;
+                          Navigator.pushNamed(
+                              context, CreateGroupEventScreen2.id,
+                              arguments: event);
+                        },
                       ),
                     ],
-                  ),
-                  Visibility(
-                    visible: _message != "",
-                    child: const SizedBox(
-                      height: 20,
-                    ),
-                  ),
-                  Center(
-                    child: Visibility(
-                      visible: _message != "",
-                      child: Text(
-                        _message,
-                        style: const TextStyle(
-                          color: Colors.redAccent,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),

@@ -35,7 +35,7 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
   void _signUpUser(AuthUser? signUpUser, BuildContext context) async {
     try {
       await AuthServices.signUp(signUpUser as AuthUser);
-      await AuthServices.login(signUpUser?.userName as String, signUpUser?.password as String);
+      await AuthServices.login(signUpUser.userName as String, signUpUser.password as String);
       Navigator.pushNamed(context, HomeScreen.id);
     } on Exception catch (e, _) {
       setState(() {
@@ -52,10 +52,10 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
       signUpUser = AuthUser.fromEmpty();
     } else {
       _selectedActivities =
-          signUpUser?.userInterests?.map((e) => e.toString()).toList() ??
+          signUpUser.userInterests?.map((e) => e.toString()).toList() ??
               <String>[];
       _selectedServices =
-          signUpUser?.userServices?.map((e) => e.toString()).toList() ??
+          signUpUser.userServices?.map((e) => e.toString()).toList() ??
               <String>[];
     }
 

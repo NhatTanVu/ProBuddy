@@ -19,8 +19,8 @@ from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
-from buddies.views import CreateBuddyGroupAPIView, ViewBuddyGroupsByUserIdAPIView, ViewBuddyGroupAPIView
-from users.views import SignUpUserAPIView, LoginUserAPIView, UserRetrieveAPIView
+from buddies.views import *
+from users.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,4 +31,5 @@ urlpatterns = [
     path('api/buddy/group/create', CreateBuddyGroupAPIView.as_view(), name="buddy_create_group"),
     path('api/buddy/groups/view/<int:user_id>', ViewBuddyGroupsByUserIdAPIView.as_view(), name='buddy_view_groups_by_user_id'),
     path('api/buddy/group/<int:id>', ViewBuddyGroupAPIView.as_view(), name='buddy_view_group_by_id'),
+    path('api/buddy/group/event/create', CreateBuddyGroupEventAPIView.as_view(), name='buddy_create_group_event'),
 ]
