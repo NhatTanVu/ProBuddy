@@ -17,8 +17,7 @@ A cross-platform mobile app for connecting individuals for fun and professional 
 ```
   manage.py migrate
 ```
-5. Run "**sql\create_tables.sql**"
-6. Go back to command line, and run:
+5. Go back to command line, and run:
 ```   
   manage.py runserver
 ```
