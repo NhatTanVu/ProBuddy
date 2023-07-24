@@ -10,6 +10,7 @@ class BuddyGroupEvent {
   String? location;
   int? createdBy;
   int? buddyGroup;
+  bool? isFinished;
 
   BuddyGroupEvent(
       {this.eventId,
@@ -19,7 +20,8 @@ class BuddyGroupEvent {
       required this.location,
       this.endDate,
       this.createdBy,
-      this.buddyGroup});
+      this.buddyGroup,
+      this.isFinished});
 
   BuddyGroupEvent.fromEmpty()
       : eventId = null,
@@ -29,7 +31,8 @@ class BuddyGroupEvent {
         location = "",
         endDate = null,
         createdBy = null,
-        buddyGroup = null;
+        buddyGroup = null,
+        isFinished = null;
 
   String toJson() {
     Map<String, Object?> obj = {
@@ -53,6 +56,7 @@ class BuddyGroupEvent {
         startDate: DateTime.parse(json['start_date']),
         location: json['location'],
         createdBy: json['created_by'],
-        buddyGroup: json['buddy_group']);
+        buddyGroup: json['buddy_group'],
+        isFinished: json['is_finished']);
   }
 }

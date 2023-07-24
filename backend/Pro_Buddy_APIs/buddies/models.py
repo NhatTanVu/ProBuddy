@@ -44,14 +44,14 @@ class BuddyGroupEvent(models.Model):
 
 class BuddyGroupEventMember(models.Model):
     buddy_group_event = models.ForeignKey(
-        BuddyGroupEvent, on_delete=models.CASCADE, related_name='members')
+        BuddyGroupEvent, on_delete=models.CASCADE, related_name='buddy_group_events')
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='buddy_group_event_members')
-    registered_date = models.DateTimeField()
+    registered_date = models.DateTimeField(auto_now_add=True)
     is_joined = models.BooleanField(default=False)
     is_paid = models.BooleanField(default=False)
-    paid_date = models.DateTimeField()
-    paid_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    paid_date = models.DateTimeField(null=True, blank=True)
+    paid_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
 
 class BuddyGroupEventReview(models.Model):

@@ -1,18 +1,13 @@
 from rest_framework import serializers
 from .models import *
+from users.serializers import GetUserDetailsSerializer
 
-
-class CreateBuddyGroupSerializer(serializers.ModelSerializer):
+class ViewBuddyGroupEventSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BuddyGroup
-        fields = ('id', 'name', 'description', 'user', 'created_date')
-        extra_kwargs = {'user': {'required': True}}
-
-
-class ViewBuddyGroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BuddyGroup
-        fields = ('id', 'name', 'description')
+        model = BuddyGroupEvent
+        fields = ('id', 'name', 'description', 'start_date', 'end_date', 'location',
+                  'is_finished', 'is_online', 'meeting_link', 'is_paid', 'fee', 
+                  'created_by', 'buddy_group')
 
 
 class CreateBuddyGroupEventSerializer(serializers.ModelSerializer):
@@ -22,3 +17,39 @@ class CreateBuddyGroupEventSerializer(serializers.ModelSerializer):
                   'location', 'created_by', 'buddy_group')
         extra_kwargs = {'buddy_group': {'required': True},
                         'created_by': {'required': True}}
+
+
+class CreateBuddyGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuddyGroup
+        fields = ('id', 'name', 'description', 'user', 'created_date')
+        extra_kwargs = {'user': {'required': True}}
+
+
+class BuddyGroupMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuddyGroupMember
+        fields = '__all__'
+
+
+class ViewBuddyGroupSerializer(serializers.ModelSerializer):
+    events = ViewBuddyGroupEventSerializer(many=True, read_only=True)
+    user = GetUserDetailsSerializer(read_only=True)
+    members = BuddyGroupMemberSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = BuddyGroup
+        fields = ('id', 'name', 'description', 'events', 'user', 'members')
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["events"] = sorted(response["events"], key=lambda x: x["start_date"], reverse=True)
+        return response
+    
+
+class CreateBuddyGroupEventMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuddyGroupEventMember
+        fields = '__all__'
+        extra_kwargs = {'buddy_group_event': {'required': True},
+                        'user': {'required': True}}

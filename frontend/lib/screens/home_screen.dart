@@ -25,7 +25,8 @@ class _HomeScreenState extends State<HomeScreen>
   int _selectedIndex = 0;
   late AuthUser _currentUser;
   late String _initials = '';
-  late List<BuddyGroup> _buddyGroups = [];
+  late List<BuddyGroup> _createdGroups = [];
+  late List<BuddyGroup> _joinedGroups = [];
   bool isLoading = false;
 
   @override
@@ -42,12 +43,15 @@ class _HomeScreenState extends State<HomeScreen>
 
     try {
       _currentUser = await AuthServices.loadUser();
-      var groups = await BuddyServices.viewGroupsByUserId(
+      var allCreatedGroups = await BuddyServices.viewCreatedGroupsByUserId(
+          _currentUser.userId!, _currentUser.jwtToken!);
+      var allJoinedGroups = await BuddyServices.viewJoinedGroupsByUserId(
           _currentUser.userId!, _currentUser.jwtToken!);
       setState(() {
         _initials = Utility.getInitials(
             [_currentUser.firstName, _currentUser.lastName].join(" "));
-        _buddyGroups = groups.take(2).toList();
+        _createdGroups = allCreatedGroups.take(3).toList();
+        _joinedGroups = allJoinedGroups.take(2).toList();
       });
     } catch (error) {
       if (error.toString() == Config.unauthorizedExceptionMessage) {
@@ -459,7 +463,108 @@ class _HomeScreenState extends State<HomeScreen>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text(
-                                  'My Groups',
+                                  'Created Groups',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                Visibility(
+                                  visible: _createdGroups.length > 3,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: const Text(
+                                      'See all',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.blue),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                for (var group in _createdGroups)
+                                  Expanded(
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                              context, ViewGroupScreen.id,
+                                              arguments: group);
+                                        },
+                                        child: SizedBox(
+                                          height: 140,
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  height: 70,
+                                                  color:
+                                                      const Color(0xAA1C1B19),
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        group.name!,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 3,
+                                                        style: const TextStyle(
+                                                            fontSize: 16),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                Expanded(
+                                  flex: (3 - _createdGroups.length),
+                                  child: Container(),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ClickableRow(
+                              title: 'Start a new group',
+                              subtitle: 'Organize your own events',
+                              leadingIcon: Icons.group_add,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, CreateGroupScreen.id);
+                              },
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Joined Groups',
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 InkWell(
@@ -477,19 +582,20 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                             Row(
                               children: [
-                                for (var group in _buddyGroups)
+                                for (var group in _joinedGroups)
                                   Expanded(
                                     child: Card(
                                       clipBehavior: Clip.antiAlias,
                                       elevation: 5,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: GestureDetector(
                                         behavior: HitTestBehavior.translucent,
                                         onTap: () {
-                                          Navigator.pushNamed(context, ViewGroupScreen.id, arguments: group);
+                                          Navigator.pushNamed(
+                                              context, ViewGroupScreen.id,
+                                              arguments: group);
                                         },
                                         child: SizedBox(
                                           height: 140,
@@ -585,22 +691,10 @@ class _HomeScreenState extends State<HomeScreen>
                                   ),
                                 ),
                                 Expanded(
-                                  flex: (2 - _buddyGroups.length),
+                                  flex: (2 - _joinedGroups.length),
                                   child: Container(),
                                 ),
                               ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            ClickableRow(
-                              title: 'Start a new group',
-                              subtitle: 'Organize your own events',
-                              leadingIcon: Icons.group_add,
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, CreateGroupScreen.id);
-                              },
                             ),
                             const SizedBox(
                               height: 20,
