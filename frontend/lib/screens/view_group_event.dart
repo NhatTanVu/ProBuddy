@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pro_buddy/models/buddy_group_event.dart';
+import 'package:pro_buddy/models/buddy_group_event_member.dart';
 import '../models/auth_user.dart';
 import '../services/auth_services.dart';
 import '../services/buddy_services.dart';
@@ -18,12 +19,27 @@ class ViewGroupEventScreen extends StatefulWidget {
   ViewGroupEventScreenState createState() => ViewGroupEventScreenState();
 }
 
+class ViewGroupEventScreenStateData {
+  AuthUser currentUser;
+  bool isRegistered;
+
+  ViewGroupEventScreenStateData(
+      {required this.currentUser, required this.isRegistered});
+}
+
 class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
   String _message = "";
 
-  Future<AuthUser> fetchData() async {
+  Future<ViewGroupEventScreenStateData> fetchData(int eventId) async {
     AuthUser currentUser = await AuthServices.loadUser();
-    return currentUser;
+    List<BuddyGroupEventMember> eventMembers =
+        await BuddyServices.viewGroupEventMembersByEventId(
+            eventId, currentUser.jwtToken!);
+    bool isRegistered =
+        eventMembers.any((obj) => obj.user == currentUser.userId);
+    ViewGroupEventScreenStateData stateData = ViewGroupEventScreenStateData(
+        currentUser: currentUser, isRegistered: isRegistered);
+    return stateData;
   }
 
   void _registerGroupEvent(int userId, int eventId, String jwtToken) async {
@@ -46,8 +62,8 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
     BuddyGroupEvent groupEvent =
         ModalRoute.of(context)?.settings.arguments as BuddyGroupEvent;
 
-    return FutureBuilder<AuthUser>(
-        future: fetchData(),
+    return FutureBuilder<ViewGroupEventScreenStateData>(
+        future: fetchData(groupEvent.eventId!),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -70,8 +86,11 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
             });
             return Container();
           } else {
-            AuthUser currentUser = snapshot.data as AuthUser;
+            ViewGroupEventScreenStateData stateData =
+                snapshot.data as ViewGroupEventScreenStateData;
+            AuthUser currentUser = stateData.currentUser;
             bool isOrganizer = currentUser.userId == groupEvent.createdBy;
+            bool isRegistered = stateData.isRegistered;
 
             return SafeArea(
               child: Scaffold(
@@ -138,13 +157,11 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                                 height: 40,
                                 fontSize: 16,
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, ViewGroupScreen.id,
-                                      arguments: groupEvent.buddyGroup);
+                                  Navigator.pop(context);
                                 },
                               ),
                               Visibility(
-                                visible: !isOrganizer,
+                                visible: !isOrganizer && !isRegistered,
                                 child: RoundedButton(
                                   title: 'Register',
                                   backgroundColour: const Color(0xFF6750A4),

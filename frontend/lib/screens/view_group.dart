@@ -39,12 +39,14 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
     AuthUser currentUser = await AuthServices.loadUser();
     BuddyGroup buddyGroup =
         await BuddyServices.viewGroupById(groupId, currentUser.jwtToken!);
-    return ViewGroupScreenStateData(currentUser: currentUser, buddyGroup: buddyGroup);
+    return ViewGroupScreenStateData(
+        currentUser: currentUser, buddyGroup: buddyGroup);
   }
 
   Future<ViewGroupScreenStateData> fetchDataFromGroup(BuddyGroup group) async {
     AuthUser currentUser = await AuthServices.loadUser();
-    return ViewGroupScreenStateData(currentUser: currentUser, buddyGroup: group);
+    return ViewGroupScreenStateData(
+        currentUser: currentUser, buddyGroup: group);
   }
 
   @override
@@ -470,6 +472,10 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                                   ),
                                 ),
                               ),
+                            Expanded(
+                              flex: (pastEvents.length == 1) ? 1 : 0,
+                              child: Container(),
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -485,7 +491,7 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                               height: 40,
                               fontSize: 16,
                               onPressed: () {
-                                Navigator.pushNamed(context, HomeScreen.id);
+                                Navigator.pop(context);
                               },
                             ),
                             Visibility(

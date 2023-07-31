@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pro_buddy/models/buddy_group_event.dart';
 import '../components/clickable_row.dart';
 import '../models/auth_user.dart';
 import '../models/buddy_group.dart';
@@ -8,6 +10,7 @@ import '../services/utility.dart';
 import '../services/buddy_services.dart';
 import 'create_group.dart';
 import 'view_group.dart';
+import 'view_group_event.dart';
 import 'welcome_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,6 +30,12 @@ class _HomeScreenState extends State<HomeScreen>
   late String _initials = '';
   late List<BuddyGroup> _createdGroups = [];
   late List<BuddyGroup> _joinedGroups = [];
+
+  late List<BuddyGroupEvent> _allEvents = [];
+  late List<BuddyGroupEvent> _upcomingEvents = [];
+  late List<BuddyGroupEvent> _goingEvents = [];
+  late List<BuddyGroupEvent> _pastEvents = [];
+
   bool isLoading = false;
 
   @override
@@ -47,11 +56,16 @@ class _HomeScreenState extends State<HomeScreen>
           _currentUser.userId!, _currentUser.jwtToken!);
       var allJoinedGroups = await BuddyServices.viewJoinedGroupsByUserId(
           _currentUser.userId!, _currentUser.jwtToken!);
+      _allEvents = await BuddyServices.viewJoinedGroupEventsByUserId(
+          _currentUser.userId!, _currentUser.jwtToken!);
       setState(() {
         _initials = Utility.getInitials(
             [_currentUser.firstName, _currentUser.lastName].join(" "));
         _createdGroups = allCreatedGroups.take(3).toList();
         _joinedGroups = allJoinedGroups.take(2).toList();
+        _goingEvents = _allEvents.where((event) => !event.isFinished!).toList();
+        _upcomingEvents = _goingEvents.take(3).toList();
+        _pastEvents = _allEvents.where((event) => event.isFinished!).toList();
       });
     } catch (error) {
       if (error.toString() == Config.unauthorizedExceptionMessage) {
@@ -141,18 +155,10 @@ class _HomeScreenState extends State<HomeScreen>
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
+                              children: const [
+                                Text(
                                   'Upcoming Events',
                                   style: TextStyle(fontSize: 20),
-                                ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: const Text(
-                                    'See all',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.blue),
-                                  ),
                                 ),
                               ],
                             ),
@@ -161,298 +167,133 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                             Row(
                               children: [
-                                Expanded(
-                                  child: Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image:
-                                              AssetImage("images/Hiking.png"),
-                                        ),
+                                for (var event in _upcomingEvents)
+                                  Expanded(
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      height: 140,
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            top: 5,
-                                            right: 5,
-                                            child: Card(
-                                              color: const Color(0xFFCAC4D0),
-                                              elevation: 5,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        5, 2, 5, 2),
-                                                child: Column(
-                                                  children: const [
-                                                    Text(
-                                                      '01',
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xFF49454F),
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                              context, ViewGroupEventScreen.id,
+                                              arguments: event);
+                                        },
+                                        child: Container(
+                                          // decoration: const BoxDecoration(
+                                          //   image: DecorationImage(
+                                          //     fit: BoxFit.cover,
+                                          //     image: AssetImage("images/Hiking.png"),
+                                          //   ),
+                                          // ),
+                                          height: 140,
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                top: 5,
+                                                right: 5,
+                                                child: Card(
+                                                  color:
+                                                      const Color(0xFFCAC4D0),
+                                                  elevation: 5,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(5, 2, 5, 2),
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          event.startDate!.day
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xFF49454F),
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          (event.startDate!
+                                                                      .year ==
+                                                                  DateTime.now()
+                                                                      .year)
+                                                              ? DateFormat(
+                                                                      '   MMM   ')
+                                                                  .format(event
+                                                                      .startDate!)
+                                                              : DateFormat(
+                                                                      'MMM yyyy')
+                                                                  .format(event
+                                                                      .startDate!),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xFF49454F),
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Text(
-                                                      'Apr',
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xFF49454F),
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            left: 0,
-                                            right: 0,
-                                            child: Container(
-                                              color: const Color(0xAA1C1B19),
-                                              padding: const EdgeInsets.all(5),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: const <Widget>[
-                                                  Text(
-                                                    'Hiking',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
+                                              Positioned(
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  color:
+                                                      const Color(0xAA1C1B19),
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        event.name!,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      const Text(
+                                                        ' - ',
+                                                        style: TextStyle(
+                                                            fontSize: 14),
+                                                      ),
+                                                      Text(
+                                                        event.location!,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                            fontSize: 12),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Text(
-                                                    '6AM - 7PM',
-                                                    style:
-                                                        TextStyle(fontSize: 14),
-                                                  ),
-                                                  Text(
-                                                    'Cypress Mountain',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
                                 Expanded(
-                                  child: Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: AssetImage("images/Movie.png"),
-                                        ),
-                                      ),
-                                      height: 140,
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            top: 5,
-                                            right: 5,
-                                            child: Card(
-                                              color: const Color(0xFFCAC4D0),
-                                              elevation: 5,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        5, 2, 5, 2),
-                                                child: Column(
-                                                  children: const [
-                                                    Text(
-                                                      '02',
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xFF49454F),
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      'Apr',
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xFF49454F),
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            left: 0,
-                                            right: 0,
-                                            child: Container(
-                                              color: const Color(0xAA1C1B19),
-                                              padding: const EdgeInsets.all(5),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: const <Widget>[
-                                                  Text(
-                                                    'Movie Night',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  ),
-                                                  Text(
-                                                    '8PM - 10PM',
-                                                    style:
-                                                        TextStyle(fontSize: 14),
-                                                  ),
-                                                  Text(
-                                                    'Metrotown',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: AssetImage(
-                                              "images/Volunteer.png"),
-                                        ),
-                                      ),
-                                      height: 140,
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            top: 5,
-                                            right: 5,
-                                            child: Card(
-                                              color: const Color(0xFFCAC4D0),
-                                              elevation: 5,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        5, 2, 5, 2),
-                                                child: Column(
-                                                  children: const [
-                                                    Text(
-                                                      '10',
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xFF49454F),
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      'Apr',
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xFF49454F),
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            left: 0,
-                                            right: 0,
-                                            child: Container(
-                                              color: const Color(0xAA1C1B19),
-                                              padding: const EdgeInsets.all(5),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: const <Widget>[
-                                                  Text(
-                                                    'Volunteering',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  ),
-                                                  Text(
-                                                    '1PM - 8PM',
-                                                    style:
-                                                        TextStyle(fontSize: 14),
-                                                  ),
-                                                  Text(
-                                                    'Golden creek park',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                  flex: (3 - _upcomingEvents.length),
+                                  child: Container(),
                                 ),
                               ],
                             ),
@@ -567,12 +408,15 @@ class _HomeScreenState extends State<HomeScreen>
                                   'Joined Groups',
                                   style: TextStyle(fontSize: 20),
                                 ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: const Text(
-                                    'See all',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.blue),
+                                Visibility(
+                                  visible: _joinedGroups.length > 2,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: const Text(
+                                      'See all',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.blue),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -742,199 +586,288 @@ class _HomeScreenState extends State<HomeScreen>
                               child: TabBarView(
                                 controller: _tabController,
                                 children: [
-                                  ListView(
-                                    children: ListTile.divideTiles(
-                                      context: context,
-                                      color: Colors.white,
-                                      tiles: [
-                                        ListTile(
-                                          textColor: Colors.white,
-                                          title: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 2,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: const [
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                        'THU, 29 JUN • 6:00 PM GMT-7'),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                        'Where and How to Make New Friends: Intractive Webminar'),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                        'Personal Development and Friendship Coaching Online'),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text('36 going'),
-                                                  ],
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  elevation: 5,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: SizedBox(
-                                                    height: 80,
-                                                    child: Image.asset(
-                                                      "images/friendship.jpg",
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        ListTile(
-                                          textColor: Colors.white,
-                                          title: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 2,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: const [
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                        'WED, 5 JUL • 6:00 PM GMT-7'),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                        'Addressing Security Concerns in ChatGPT'),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                        'Vancouver ChatGPT Experts'),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text('33 going'),
-                                                  ],
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  elevation: 5,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: SizedBox(
-                                                    height: 80,
-                                                    child: Image.asset(
-                                                      "images/chat_gpt_experts.jpg",
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ).toList(),
-                                  ),
-                                  const Center(
-                                    child:
-                                        Text('Hmm, nothing on the horizon...'),
-                                  ),
-                                  ListView(
-                                    children: ListTile.divideTiles(
-                                      context: context,
-                                      color: Colors.white,
-                                      tiles: [
-                                        ListTile(
-                                          textColor: Colors.white,
-                                          title: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 2,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    const Text(
-                                                        'WED, 7 JUN • 6:00 PM GMT-7'),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    const Text(
-                                                        'Building Better Relationships with ChatGPT'),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    const Text(
-                                                        'Vancouver ChatGPT Experts'),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Row(
-                                                      children: const [
-                                                        Icon(
-                                                          Icons.check_circle,
-                                                          size: 30,
-                                                          color: Colors
-                                                              .greenAccent,
+                                  (_allEvents.isNotEmpty)
+                                      ? ListView(
+                                          children: ListTile.divideTiles(
+                                            context: context,
+                                            color: Colors.white,
+                                            tiles: [
+                                              for (var event in _allEvents)
+                                                ListTile(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(context,
+                                                        ViewGroupEventScreen.id,
+                                                        arguments: event);
+                                                  },
+                                                  textColor: Colors.white,
+                                                  title: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(DateFormat(
+                                                                    'EEE, dd MMM yyyy')
+                                                                .format(event
+                                                                    .startDate!)),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  event.name!,
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          20,
+                                                                      color: Color(
+                                                                          0xFFD0BCFF)),
+                                                                ),
+                                                                Visibility(
+                                                                  visible: event
+                                                                      .isFinished!,
+                                                                  child:
+                                                                      const SizedBox(
+                                                                          width:
+                                                                              5),
+                                                                ),
+                                                                Visibility(
+                                                                  visible: event
+                                                                      .isFinished!,
+                                                                  child:
+                                                                      const Icon(
+                                                                    Icons
+                                                                        .check_circle,
+                                                                    size: 20,
+                                                                    color: Colors
+                                                                        .greenAccent,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(event
+                                                                .description!),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            // Text('36 going'),
+                                                          ],
                                                         ),
-                                                        SizedBox(width: 5),
-                                                        Text('208 going'),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  elevation: 5,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: SizedBox(
-                                                    height: 80,
-                                                    child: Image.asset(
-                                                      "images/ai-generated.jpg",
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                                      ),
+                                                      // Expanded(
+                                                      //   flex: 1,
+                                                      //   child: Card(
+                                                      //     clipBehavior: Clip.antiAlias,
+                                                      //     elevation: 5,
+                                                      //     shape: RoundedRectangleBorder(
+                                                      //       borderRadius:
+                                                      //       BorderRadius.circular(
+                                                      //           10),
+                                                      //     ),
+                                                      //     child: SizedBox(
+                                                      //       height: 80,
+                                                      //       child: Image.asset(
+                                                      //         "images/friendship.jpg",
+                                                      //         fit: BoxFit.cover,
+                                                      //       ),
+                                                      //     ),
+                                                      //   ),
+                                                      // )
+                                                    ],
                                                   ),
                                                 ),
-                                              )
                                             ],
-                                          ),
+                                          ).toList(),
+                                        )
+                                      : const Center(
+                                          child: Text(
+                                              'Hmm, nothing on the horizon...'),
                                         ),
-                                      ],
-                                    ).toList(),
-                                  ),
+                                  (_goingEvents.isNotEmpty)
+                                      ? ListView(
+                                          children: ListTile.divideTiles(
+                                            context: context,
+                                            color: Colors.white,
+                                            tiles: [
+                                              for (var event in _goingEvents)
+                                                ListTile(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(context,
+                                                        ViewGroupEventScreen.id,
+                                                        arguments: event);
+                                                  },
+                                                  textColor: Colors.white,
+                                                  title: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(DateFormat(
+                                                                    'EEE, dd MMM yyyy')
+                                                                .format(event
+                                                                    .startDate!)),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(
+                                                              event.name!,
+                                                              style: const TextStyle(
+                                                                  fontSize: 20,
+                                                                  color: Color(
+                                                                      0xFFD0BCFF)),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(event
+                                                                .description!),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            // Text('36 going'),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      // Expanded(
+                                                      //   flex: 1,
+                                                      //   child: Card(
+                                                      //     clipBehavior: Clip.antiAlias,
+                                                      //     elevation: 5,
+                                                      //     shape: RoundedRectangleBorder(
+                                                      //       borderRadius:
+                                                      //       BorderRadius.circular(
+                                                      //           10),
+                                                      //     ),
+                                                      //     child: SizedBox(
+                                                      //       height: 80,
+                                                      //       child: Image.asset(
+                                                      //         "images/friendship.jpg",
+                                                      //         fit: BoxFit.cover,
+                                                      //       ),
+                                                      //     ),
+                                                      //   ),
+                                                      // )
+                                                    ],
+                                                  ),
+                                                ),
+                                            ],
+                                          ).toList(),
+                                        )
+                                      : const Center(
+                                          child: Text(
+                                              'Hmm, nothing on the horizon...'),
+                                        ),
+                                  (_pastEvents.isNotEmpty)
+                                      ? ListView(
+                                          children: ListTile.divideTiles(
+                                            context: context,
+                                            color: Colors.white,
+                                            tiles: [
+                                              for (var event in _pastEvents)
+                                                ListTile(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                        context, ViewGroupEventScreen.id,
+                                                        arguments: event);
+                                                  },
+                                                  textColor: Colors.white,
+                                                  title: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(DateFormat(
+                                                                    'EEE, dd MMM yyyy')
+                                                                .format(event
+                                                                    .startDate!)),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  event.name!,
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          20,
+                                                                      color: Color(
+                                                                          0xFFD0BCFF)),
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 5),
+                                                                const Icon(
+                                                                  Icons
+                                                                      .check_circle,
+                                                                  size: 20,
+                                                                  color: Colors
+                                                                      .greenAccent,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(event
+                                                                .description!),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            // Text('36 going'),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      // Expanded(
+                                                      //   flex: 1,
+                                                      //   child: Card(
+                                                      //     clipBehavior: Clip.antiAlias,
+                                                      //     elevation: 5,
+                                                      //     shape: RoundedRectangleBorder(
+                                                      //       borderRadius:
+                                                      //       BorderRadius.circular(
+                                                      //           10),
+                                                      //     ),
+                                                      //     child: SizedBox(
+                                                      //       height: 80,
+                                                      //       child: Image.asset(
+                                                      //         "images/friendship.jpg",
+                                                      //         fit: BoxFit.cover,
+                                                      //       ),
+                                                      //     ),
+                                                      //   ),
+                                                      // )
+                                                    ],
+                                                  ),
+                                                ),
+                                            ],
+                                          ).toList(),
+                                        )
+                                      : const Center(
+                                          child: Text(
+                                              'Hmm, nothing on the horizon...'),
+                                        ),
                                 ],
                               ),
                             ),

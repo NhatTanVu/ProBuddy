@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/buddy_group.dart';
 import '../models/buddy_group_event.dart';
+import '../models/buddy_group_event_member.dart';
 import 'config.dart';
 
 class BuddyServices {
@@ -160,6 +161,58 @@ class BuddyServices {
       throw Exception('Unauthorized access');
     } else {
       throw Exception('View group by id failed');
+    }
+  }
+
+  static Future<List<BuddyGroupEventMember>> viewGroupEventMembersByEventId(
+      int eventId, String jwtToken) async {
+    final viewUrl = Uri.parse("$baseUrl/buddy/group/event/$eventId/members");
+    http.Response response = await http.get(
+      viewUrl,
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        List<BuddyGroupEventMember> result = (jsonDecode(response.body) as List)
+            .map((json) => BuddyGroupEventMember.fromJson(jsonEncode(json)))
+            .toList();
+        return result;
+      } catch (e) {
+        throw Exception('Error when processing request');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized access');
+    } else {
+      throw Exception('View event members failed');
+    }
+  }
+
+  static Future<List<BuddyGroupEvent>> viewJoinedGroupEventsByUserId(
+      int userId, String jwtToken) async {
+    final viewUrl = Uri.parse("$baseUrl/buddy/group/events/view/joined/$userId");
+    http.Response response = await http.get(
+      viewUrl,
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        List<BuddyGroupEvent> result = (jsonDecode(response.body) as List)
+            .map((json) => BuddyGroupEvent.fromJson(jsonEncode(json)))
+            .toList();
+        return result;
+      } catch (e) {
+        throw Exception('Error when processing request');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized access');
+    } else {
+      throw Exception('View joined events failed');
     }
   }
 }
