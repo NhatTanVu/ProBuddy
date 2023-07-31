@@ -85,7 +85,7 @@ class BuddyServices {
     } else if (response.statusCode == 401) {
       throw Exception('Unauthorized access');
     } else {
-      throw Exception('Create event failed');
+      throw Exception('Register event failed');
     }
   }
 
@@ -137,7 +137,7 @@ class BuddyServices {
     } else if (response.statusCode == 401) {
       throw Exception('Unauthorized access');
     } else {
-      throw Exception('View created groups failed');
+      throw Exception('View joined groups failed');
     }
   }
 
@@ -192,7 +192,8 @@ class BuddyServices {
 
   static Future<List<BuddyGroupEvent>> viewJoinedGroupEventsByUserId(
       int userId, String jwtToken) async {
-    final viewUrl = Uri.parse("$baseUrl/buddy/group/events/view/joined/$userId");
+    final viewUrl =
+        Uri.parse("$baseUrl/buddy/group/events/view/joined/$userId");
     http.Response response = await http.get(
       viewUrl,
       headers: {
@@ -213,6 +214,31 @@ class BuddyServices {
       throw Exception('Unauthorized access');
     } else {
       throw Exception('View joined events failed');
+    }
+  }
+
+  static Future<List<BuddyGroup>> viewAllGroups(String jwtToken) async {
+    final viewUrl = Uri.parse("$baseUrl/buddy/groups");
+    http.Response response = await http.get(
+      viewUrl,
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        List<BuddyGroup> result = (jsonDecode(response.body) as List)
+            .map((json) => BuddyGroup.fromJson(jsonEncode(json)))
+            .toList();
+        return result;
+      } catch (e) {
+        throw Exception('Error when processing request');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized access');
+    } else {
+      throw Exception('View all groups failed');
     }
   }
 }

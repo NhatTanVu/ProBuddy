@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pro_buddy/screens/view_all_groups.dart';
 import 'screens/create_group.dart';
 import 'screens/view_group.dart';
 import 'screens/home_screen.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         CreateGroupEventScreen1.id: (context) => const CreateGroupEventScreen1(),
         CreateGroupEventScreen2.id: (context) => const CreateGroupEventScreen2(),
         ViewGroupEventScreen.id: (context) => const ViewGroupEventScreen(),
+        ViewAllGroupsScreen.id: (context) => const ViewAllGroupsScreen()
       },
     );
   }

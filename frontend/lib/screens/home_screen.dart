@@ -9,6 +9,7 @@ import '../services/config.dart';
 import '../services/utility.dart';
 import '../services/buddy_services.dart';
 import 'create_group.dart';
+import 'view_all_groups.dart';
 import 'view_group.dart';
 import 'view_group_event.dart';
 import 'welcome_screen.dart';
@@ -80,7 +81,19 @@ class _HomeScreenState extends State<HomeScreen>
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      switch (index) {
+        case 0:
+          Navigator.pushNamed(context, HomeScreen.id);
+          _selectedIndex = index;
+          break;
+        case 1:
+          Navigator.pushNamed(context, ViewAllGroupsScreen.id);
+          _selectedIndex = index;
+          break;
+        case 2:
+        case 3:
+          break;
+      }
     });
   }
 
@@ -488,48 +501,55 @@ class _HomeScreenState extends State<HomeScreen>
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: SizedBox(
-                                      height: 140,
-                                      child: Stack(
-                                        children: [
-                                          const Positioned(
-                                            top: 0,
-                                            left: 10,
-                                            child: Icon(
-                                              Icons.groups,
-                                              color: Color(0xFFD0BCFF),
-                                              size: 40,
-                                            ),
-                                          ),
-                                          Positioned.fill(
-                                            child: Container(
-                                              padding: const EdgeInsets.all(10),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: const <Widget>[
-                                                  Text(
-                                                    'Discover\nmore groups',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ],
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, ViewAllGroupsScreen.id);
+                                      },
+                                      child: SizedBox(
+                                        height: 140,
+                                        child: Stack(
+                                          children: [
+                                            const Positioned(
+                                              top: 0,
+                                              left: 10,
+                                              child: Icon(
+                                                Icons.groups,
+                                                color: Color(0xFFD0BCFF),
+                                                size: 40,
                                               ),
                                             ),
-                                          ),
-                                          const Positioned(
-                                            bottom: 0,
-                                            right: 10,
-                                            child: Icon(
-                                              Icons.trending_flat,
-                                              size: 30,
+                                            Positioned.fill(
+                                              child: Container(
+                                                padding: const EdgeInsets.all(10),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: const <Widget>[
+                                                    Text(
+                                                      'Discover\nmore groups',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ),
-                                          )
-                                        ],
+                                            const Positioned(
+                                              bottom: 0,
+                                              right: 10,
+                                              child: Icon(
+                                                Icons.trending_flat,
+                                                size: 30,
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
