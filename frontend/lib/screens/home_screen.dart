@@ -30,7 +30,9 @@ class _HomeScreenState extends State<HomeScreen>
   late AuthUser _currentUser;
   late String _initials = '';
   late List<BuddyGroup> _createdGroups = [];
+  late int _numOfCreatedGroups = 0;
   late List<BuddyGroup> _joinedGroups = [];
+  late int _numOfJoinedGroups = 0;
 
   late List<BuddyGroupEvent> _allEvents = [];
   late List<BuddyGroupEvent> _upcomingEvents = [];
@@ -62,7 +64,9 @@ class _HomeScreenState extends State<HomeScreen>
       setState(() {
         _initials = Utility.getInitials(
             [_currentUser.firstName, _currentUser.lastName].join(" "));
+        _numOfCreatedGroups = allCreatedGroups.length;
         _createdGroups = allCreatedGroups.take(3).toList();
+        _numOfJoinedGroups = allJoinedGroups.length;
         _joinedGroups = allJoinedGroups.take(2).toList();
         _goingEvents = _allEvents.where((event) => !event.isFinished!).toList();
         _upcomingEvents = _goingEvents.take(3).toList();
@@ -321,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 Visibility(
-                                  visible: _createdGroups.length > 3,
+                                  visible: _numOfCreatedGroups > 3,
                                   child: InkWell(
                                     onTap: () {},
                                     child: const Text(
@@ -422,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 Visibility(
-                                  visible: _joinedGroups.length > 2,
+                                  visible: _numOfJoinedGroups > 2,
                                   child: InkWell(
                                     onTap: () {},
                                     child: const Text(

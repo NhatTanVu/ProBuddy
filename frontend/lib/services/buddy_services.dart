@@ -38,6 +38,31 @@ class BuddyServices {
     }
   }
 
+  static Future<void> joinGroup(
+      int userId, int groupId, String jwtToken) async {
+    final createUrl = Uri.parse("$baseUrl/buddy/group/join");
+    http.Response response = await http.post(
+      createUrl,
+      body: jsonEncode({"buddy_group": groupId, "user": userId}),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 201) {
+      try {
+        return;
+      } catch (e) {
+        throw Exception('Error when processing request');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized access');
+    } else {
+      throw Exception('Join group failed');
+    }
+  }
+
   static Future<BuddyGroupEvent> createGroupEvent(
       BuddyGroupEvent buddyGroupEvent, String jwtToken) async {
     final createUrl = Uri.parse("$baseUrl/buddy/group/event/create");

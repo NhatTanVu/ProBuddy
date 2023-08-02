@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/rounded_button.dart';
 import '../models/auth_user.dart';
 import '../models/buddy_group.dart';
 import '../services/auth_services.dart';
@@ -36,7 +37,11 @@ class ViewAllGroupsScreenState extends State<ViewAllGroupsScreen> {
       _currentUser = await AuthServices.loadUser();
       var allGroups = await BuddyServices.viewAllGroups(_currentUser.jwtToken!);
       setState(() {
-        _allGroups = allGroups;
+        _allGroups = allGroups
+            .where((g) =>
+                !g.memberIds.contains(_currentUser.userId!) &&
+                g.createdBy.userId != _currentUser.userId)
+            .toList();
       });
     } catch (error) {
       if (error.toString() == Config.unauthorizedExceptionMessage) {
@@ -64,6 +69,29 @@ class ViewAllGroupsScreenState extends State<ViewAllGroupsScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Flexible(
+                      flex: 1,
+                      child: Text(
+                        "All Groups",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Divider(
+                  color: Color(0xFFE6E6E6),
+                  thickness: 1,
+                ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -131,6 +159,24 @@ class ViewAllGroupsScreenState extends State<ViewAllGroupsScreen> {
                       ),
                     ],
                   ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RoundedButton(
+                      title: 'Go Back',
+                      backgroundColour: const Color(0xFF6750A4),
+                      textColour: const Color(0xFFD0BCFF),
+                      height: 40,
+                      fontSize: 16,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
               ]),
             ),
           ),

@@ -48,6 +48,13 @@ class ViewBuddyGroupAPIView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class JoinBuddyGroupAPIView(generics.CreateAPIView):
+    queryset = BuddyGroupMember.objects.all()
+    serializer_class = CreateBuddyGroupMemberSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class CreateBuddyGroupEventAPIView(generics.CreateAPIView):
     queryset = BuddyGroupEvent.objects.all()
     serializer_class = CreateBuddyGroupEventSerializer

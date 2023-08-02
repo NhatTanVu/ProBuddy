@@ -61,3 +61,10 @@ class CreateBuddyGroupEventMemberSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'buddy_group_event': {'required': True},
                         'user': {'required': True}}
+        
+class CreateBuddyGroupMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuddyGroupMember
+        fields = '__all__'
+        extra_kwargs = {'buddy_group': {'required': True},
+                        'user': {'required': True}}        

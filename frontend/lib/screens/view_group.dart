@@ -30,6 +30,8 @@ class ViewGroupScreenStateData {
 }
 
 class ViewGroupScreenState extends State<ViewGroupScreen> {
+  String _message = "";
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +49,21 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
     AuthUser currentUser = await AuthServices.loadUser();
     return ViewGroupScreenStateData(
         currentUser: currentUser, buddyGroup: group);
+  }
+
+  void _joinGroup(int userId, int groupId, String jwtToken) async {
+    try {
+      await BuddyServices.joinGroup(userId, groupId, jwtToken);
+      Navigator.pushNamed(context, HomeScreen.id);
+    } on Exception catch (e, _) {
+      if (e.toString() == Config.unauthorizedExceptionMessage) {
+        Navigator.pushNamed(context, WelcomeScreen.id);
+      } else {
+        setState(() {
+          _message = e.toString().replaceAll("Exception: ", "");
+        });
+      }
+    }
   }
 
   @override
@@ -510,7 +527,42 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                                 },
                               ),
                             ),
+
+                            Visibility(
+                              visible: !isOrganizer,
+                              child: RoundedButton(
+                                title: 'Join Group',
+                                backgroundColour: const Color(0xFF6750A4),
+                                textColour: const Color(0xFFD0BCFF),
+                                height: 40,
+                                width: 130,
+                                fontSize: 16,
+                                onPressed: () => _joinGroup(
+                                    currentUser.userId!,
+                                    group.groupId!,
+                                    currentUser.jwtToken!),
+                              ),
+                            ),
+
                           ],
+                        ),
+                        Visibility(
+                          visible: _message != "",
+                          child: const SizedBox(
+                            height: 20,
+                          ),
+                        ),
+                        Center(
+                          child: Visibility(
+                            visible: _message != "",
+                            child: Text(
+                              _message,
+                              style: const TextStyle(
+                                color: Colors.redAccent,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),

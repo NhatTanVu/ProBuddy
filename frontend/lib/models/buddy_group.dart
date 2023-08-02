@@ -9,13 +9,15 @@ class BuddyGroup {
   String? description;
   List<BuddyGroupEvent> events;
   AuthUser createdBy;
+  List<int> memberIds;
 
   BuddyGroup(
       {required this.groupId,
       required this.name,
       required this.description,
       required this.events,
-      required this.createdBy});
+      required this.createdBy,
+      required this.memberIds});
 
   static BuddyGroup fromJson(String jsonString) {
     var json = jsonDecode(jsonString);
@@ -27,7 +29,10 @@ class BuddyGroup {
         events: (json['events'] as List)
             .map((eventJson) => BuddyGroupEvent.fromJson(jsonEncode(eventJson)))
             .toList(),
-        createdBy: AuthUser.fromJson(jsonEncode(json['user']))
+        createdBy: AuthUser.fromJson(jsonEncode(json['user'])),
+        memberIds: (json['members'] as List)
+            .map((eventJson) => eventJson["user"] as int)
+            .toList()
     );
   }
 }
