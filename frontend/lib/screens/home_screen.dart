@@ -9,6 +9,7 @@ import '../services/config.dart';
 import '../services/utility.dart';
 import '../services/buddy_services.dart';
 import 'create_group.dart';
+import 'profile.dart';
 import 'view_all_groups.dart';
 import 'view_group.dart';
 import 'view_group_event.dart';
@@ -141,15 +142,23 @@ class _HomeScreenState extends State<HomeScreen>
                         Positioned(
                             right: 10,
                             top: 5,
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundColor: Colors.white,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, ProfileScreen.id,
+                                    arguments: _currentUser);
+                              },
                               child: CircleAvatar(
-                                radius: 18,
-                                backgroundColor: const Color(0xFF1c1b1f),
-                                child: Text(
-                                  _initials,
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                radius: 20,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: const Color(0xFF1c1b1f),
+                                  child: Text(
+                                    _initials,
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
                                 ),
                               ),
                             )),

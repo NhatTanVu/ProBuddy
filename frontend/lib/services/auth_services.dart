@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/auth_user.dart';
@@ -51,5 +52,22 @@ class AuthServices {
     final preferences = await SharedPreferences.getInstance();
     String strAuthUser = preferences.getString('auth_user') ?? "";
     return AuthUser.fromJson(strAuthUser);
+  }
+
+  static Future<void> logout(String jwtToken, String refreshToken) async {
+    final logoutUrl = Uri.parse("$baseUrl/user/logout");
+
+    http.Response response = await http.post(
+      logoutUrl,
+      body: jsonEncode({'refresh_token': refreshToken}),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 205) {
+      throw Exception('Logout failed');
+    }
   }
 }

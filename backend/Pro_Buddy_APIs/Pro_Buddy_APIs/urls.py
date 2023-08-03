@@ -26,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/user/login', LoginUserAPIView.as_view(), name='user_login'),
+    path('api/user/logout', LogoutUserAPIView.as_view(), name='user_logout'),
     path('api/user/signup', SignUpUserAPIView.as_view(), name="user_sign_up"),
     path('api/user/<int:id>', UserRetrieveAPIView.as_view(), name='user_view_by_id'),
     path('api/buddy/group/create', CreateBuddyGroupAPIView.as_view(), name="buddy_create_group"),

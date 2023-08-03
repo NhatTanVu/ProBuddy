@@ -115,6 +115,7 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
               .take(2)
               .toList();
           bool isOrganizer = group.createdBy.userId == currentUser.userId;
+          bool isMember = group.memberIds.contains(currentUser.userId!);
 
           return SafeArea(
             child: Scaffold(
@@ -529,7 +530,7 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                             ),
 
                             Visibility(
-                              visible: !isOrganizer,
+                              visible: !isOrganizer && !isMember,
                               child: RoundedButton(
                                 title: 'Join Group',
                                 backgroundColour: const Color(0xFF6750A4),
@@ -543,7 +544,6 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                                     currentUser.jwtToken!),
                               ),
                             ),
-
                           ],
                         ),
                         Visibility(
