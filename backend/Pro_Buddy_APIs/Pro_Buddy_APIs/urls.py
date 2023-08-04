@@ -35,8 +35,10 @@ urlpatterns = [
     path('api/buddy/groups/view/joined/<int:user_id>', ViewBuddyGroupsJoinedByUserIdAPIView.as_view(), name='buddy_view_groups_joined_by_user_id'),
     path('api/buddy/group/<int:id>', ViewBuddyGroupAPIView.as_view(), name='buddy_view_group_by_id'),
     path('api/buddy/group/join', JoinBuddyGroupAPIView.as_view(), name='buddy_join_group_by_user_id'),
+    path('api/buddy/group/leave', LeaveBuddyGroupAPIView.as_view(), name='buddy_leave_group_by_user_id'),
     path('api/buddy/group/event/create', CreateBuddyGroupEventAPIView.as_view(), name='buddy_create_group_event'),
     path('api/buddy/group/event/register', RegisterBuddyGroupEventAPIView.as_view(), name='buddy_register_group_event'),
+    path('api/buddy/group/event/unregister', UnregisterBuddyGroupEventAPIView.as_view(), name='buddy_unregister_group_event'),
     path('api/buddy/group/event/<int:event_id>/members', ViewBuddyGroupEventMembersByEventIdAPIView.as_view(), name='buddy_view_group_event_members_by_event_id'),
     path('api/buddy/group/events/view/joined/<int:user_id>', ViewBuddyGroupEventsJoinedByUserIdAPIView.as_view(), name='buddy_view_group_events_joined_by_user_id'),
 ]

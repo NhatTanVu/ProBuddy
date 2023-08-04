@@ -57,6 +57,21 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
     }
   }
 
+  void _unregisterGroupEvent(int userId, int eventId, String jwtToken) async {
+    try {
+      await BuddyServices.unregisterGroupEvent(userId, eventId, jwtToken);
+      Navigator.pushNamed(context, HomeScreen.id);
+    } on Exception catch (e, _) {
+      if (e.toString() == Config.unauthorizedExceptionMessage) {
+        Navigator.pushNamed(context, WelcomeScreen.id);
+      } else {
+        setState(() {
+          _message = e.toString().replaceAll("Exception: ", "");
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     BuddyGroupEvent groupEvent =
@@ -169,6 +184,21 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                                   height: 40,
                                   fontSize: 16,
                                   onPressed: () => _registerGroupEvent(
+                                      currentUser.userId!,
+                                      groupEvent.eventId!,
+                                      currentUser.jwtToken!),
+                                ),
+                              ),
+                              Visibility(
+                                visible: !isOrganizer && isRegistered,
+                                child: RoundedButton(
+                                  title: 'Unregister',
+                                  backgroundColour: const Color(0xFF6750A4),
+                                  textColour: const Color(0xFFD0BCFF),
+                                  height: 40,
+                                  width: 120,
+                                  fontSize: 16,
+                                  onPressed: () => _unregisterGroupEvent(
                                       currentUser.userId!,
                                       groupEvent.eventId!,
                                       currentUser.jwtToken!),

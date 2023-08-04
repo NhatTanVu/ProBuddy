@@ -40,9 +40,9 @@ class BuddyServices {
 
   static Future<void> joinGroup(
       int userId, int groupId, String jwtToken) async {
-    final createUrl = Uri.parse("$baseUrl/buddy/group/join");
+    final joinUrl = Uri.parse("$baseUrl/buddy/group/join");
     http.Response response = await http.post(
-      createUrl,
+      joinUrl,
       body: jsonEncode({"buddy_group": groupId, "user": userId}),
       headers: {
         'Authorization': 'Bearer $jwtToken',
@@ -60,6 +60,31 @@ class BuddyServices {
       throw Exception('Unauthorized access');
     } else {
       throw Exception('Join group failed');
+    }
+  }
+
+  static Future<void> leaveGroup(
+      int userId, int groupId, String jwtToken) async {
+    final leaveUrl = Uri.parse("$baseUrl/buddy/group/leave");
+    http.Response response = await http.delete(
+      leaveUrl,
+      body: jsonEncode({"buddy_group": groupId, "user": userId}),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        return;
+      } catch (e) {
+        throw Exception('Error when processing request');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized access');
+    } else {
+      throw Exception('Leave group failed');
     }
   }
 
@@ -91,9 +116,9 @@ class BuddyServices {
 
   static Future<void> registerGroupEvent(
       int userId, int eventId, String jwtToken) async {
-    final createUrl = Uri.parse("$baseUrl/buddy/group/event/register");
+    final registerUrl = Uri.parse("$baseUrl/buddy/group/event/register");
     http.Response response = await http.post(
-      createUrl,
+      registerUrl,
       body: jsonEncode({"buddy_group_event": eventId, "user": userId}),
       headers: {
         'Authorization': 'Bearer $jwtToken',
@@ -111,6 +136,31 @@ class BuddyServices {
       throw Exception('Unauthorized access');
     } else {
       throw Exception('Register event failed');
+    }
+  }
+
+  static Future<void> unregisterGroupEvent(
+      int userId, int eventId, String jwtToken) async {
+    final unregisterUrl = Uri.parse("$baseUrl/buddy/group/event/unregister");
+    http.Response response = await http.delete(
+      unregisterUrl,
+      body: jsonEncode({"buddy_group_event": eventId, "user": userId}),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        return;
+      } catch (e) {
+        throw Exception('Error when processing request');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized access');
+    } else {
+      throw Exception('Unregister event failed');
     }
   }
 

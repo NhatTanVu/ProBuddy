@@ -4,6 +4,7 @@ from buddies.serializers import *
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import status
 
 
 class CreateBuddyGroupAPIView(generics.CreateAPIView):
@@ -55,6 +56,23 @@ class JoinBuddyGroupAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class LeaveBuddyGroupAPIView(generics.DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request, *args, **kwargs):
+        buddy_group_id = request.data.get('buddy_group')
+        user_id = request.data.get('user')
+
+        if buddy_group_id is None:
+            return Response({"detail": "buddy_group is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if user_id is None:
+            return Response({"detail": "user_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        BuddyGroupMember.objects.filter(
+            user_id=user_id, buddy_group_id=buddy_group_id).delete()
+        return Response({"detail": "Successfully left the group."}, status=status.HTTP_200_OK)
+
+
 class CreateBuddyGroupEventAPIView(generics.CreateAPIView):
     queryset = BuddyGroupEvent.objects.all()
     serializer_class = CreateBuddyGroupEventSerializer
@@ -69,6 +87,23 @@ class RegisterBuddyGroupEventAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class UnregisterBuddyGroupEventAPIView(generics.DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request, *args, **kwargs):
+        buddy_group_event_id = request.data.get('buddy_group_event')
+        user_id = request.data.get('user')
+
+        if buddy_group_event_id is None:
+            return Response({"detail": "buddy_group_event is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if user_id is None:
+            return Response({"detail": "user_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        BuddyGroupEventMember.objects.filter(
+            user_id=user_id, buddy_group_event_id=buddy_group_event_id).delete()
+        return Response({"detail": "Successfully unregistered from the event."}, status=status.HTTP_200_OK)
+
+
 class ViewBuddyGroupEventMembersByEventIdAPIView(generics.ListAPIView):
     queryset = BuddyGroupEventMember.objects.all()
     serializer_class = BuddyGroupEventMemberSerializer
@@ -78,7 +113,7 @@ class ViewBuddyGroupEventMembersByEventIdAPIView(generics.ListAPIView):
     def get_queryset(self):
         event_id = self.kwargs['event_id']
         return BuddyGroupEventMember.objects.filter(buddy_group_event__id=event_id)
-    
+
 
 class ViewBuddyGroupEventsJoinedByUserIdAPIView(generics.ListAPIView):
     queryset = BuddyGroupEvent.objects.all()
@@ -94,7 +129,7 @@ class ViewBuddyGroupEventsJoinedByUserIdAPIView(generics.ListAPIView):
             id__in=buddy_group_event_ids).order_by('start_date')
         serializer = ViewBuddyGroupEventSerializer(queryset, many=True)
         return Response(serializer.data)
-    
+
 
 class ViewAllBuddyGroupsAPIView(generics.ListAPIView):
     queryset = BuddyGroup.objects.all()

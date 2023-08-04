@@ -53,9 +53,30 @@ class ProfileScreenState extends State<ProfileScreen> {
                     color: Color(0xFFE6E6E6),
                     thickness: 1,
                   ),
-                  const SizedBox(
-                    height: 20,
+                  Center(
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "${_currentUser.firstName} ${_currentUser.lastName}",
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "${_currentUser.email}",
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
                   ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
