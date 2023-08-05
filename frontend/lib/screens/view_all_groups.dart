@@ -117,7 +117,13 @@ class ViewAllGroupsScreenState extends State<ViewAllGroupsScreen> {
                                       context, ViewGroupScreen.id,
                                       arguments: _allGroups[j]);
                                 },
-                                child: SizedBox(
+                                child: Container(
+                                  decoration: (_allGroups[j].image == null) ? null : BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(_allGroups[j].image!),
+                                    ),
+                                  ),
                                   height: 140,
                                   child: Stack(
                                     children: [

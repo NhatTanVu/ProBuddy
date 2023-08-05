@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:intl/intl.dart';
+import 'dart:io';
 
 class BuddyGroupEvent {
   int? eventId;
@@ -11,6 +11,8 @@ class BuddyGroupEvent {
   int? createdBy;
   int? buddyGroup;
   bool? isFinished;
+  String? image;
+  File? imageFile;
 
   BuddyGroupEvent(
       {this.eventId,
@@ -18,6 +20,8 @@ class BuddyGroupEvent {
       required this.description,
       required this.startDate,
       required this.location,
+      this.image,
+      this.imageFile,
       this.endDate,
       this.createdBy,
       this.buddyGroup,
@@ -29,22 +33,12 @@ class BuddyGroupEvent {
         description = "",
         startDate = null,
         location = "",
+        image = null,
+        imageFile = null,
         endDate = null,
         createdBy = null,
         buddyGroup = null,
         isFinished = null;
-
-  String toJson() {
-    Map<String, Object?> obj = {
-      'name': name,
-      'description': description,
-      'start_date': DateFormat('yyyy-MM-dd').format(startDate!),
-      'location': location,
-      'created_by': createdBy,
-      'buddy_group': buddyGroup
-    };
-    return jsonEncode(obj);
-  }
 
   static BuddyGroupEvent fromJson(String jsonString) {
     var json = jsonDecode(jsonString);
@@ -55,6 +49,7 @@ class BuddyGroupEvent {
         description: json['description'],
         startDate: DateTime.parse(json['start_date']),
         location: json['location'],
+        image: json['image'],
         createdBy: json['created_by'],
         buddyGroup: json['buddy_group'],
         isFinished: json['is_finished']);

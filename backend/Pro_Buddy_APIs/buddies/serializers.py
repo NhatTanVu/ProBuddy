@@ -14,14 +14,14 @@ class ViewBuddyGroupEventSerializer(serializers.ModelSerializer):
         model = BuddyGroupEvent
         fields = ('id', 'name', 'description', 'start_date', 'end_date', 'location',
                   'is_finished', 'is_online', 'meeting_link', 'is_paid', 'fee',
-                  'created_by', 'buddy_group')
+                  'created_by', 'buddy_group', 'image')
 
 
 class CreateBuddyGroupEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuddyGroupEvent
         fields = ('id', 'name', 'description', 'start_date',
-                  'location', 'created_by', 'buddy_group')
+                  'location', 'created_by', 'buddy_group', 'image')
         extra_kwargs = {'buddy_group': {'required': True},
                         'created_by': {'required': True}}
 
@@ -29,7 +29,7 @@ class CreateBuddyGroupEventSerializer(serializers.ModelSerializer):
 class CreateBuddyGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuddyGroup
-        fields = ('id', 'name', 'description', 'user', 'created_date')
+        fields = ('id', 'name', 'description', 'user', 'created_date', 'image')
         extra_kwargs = {'user': {'required': True}}
 
 
@@ -46,7 +46,8 @@ class ViewBuddyGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BuddyGroup
-        fields = ('id', 'name', 'description', 'events', 'user', 'members')
+        fields = ('id', 'name', 'description',
+                  'events', 'user', 'members', 'image')
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
@@ -61,10 +62,11 @@ class CreateBuddyGroupEventMemberSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'buddy_group_event': {'required': True},
                         'user': {'required': True}}
-        
+
+
 class CreateBuddyGroupMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuddyGroupMember
         fields = '__all__'
         extra_kwargs = {'buddy_group': {'required': True},
-                        'user': {'required': True}}        
+                        'user': {'required': True}}

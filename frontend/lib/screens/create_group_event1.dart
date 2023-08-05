@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pro_buddy/models/buddy_group_event.dart';
 import '../components/rounded_button.dart';
 import '../components/rounded_multiline_textbox.dart';
@@ -18,12 +21,24 @@ class CreateGroupEventScreen1 extends StatefulWidget {
 class CreateGroupEventScreen1State extends State<CreateGroupEventScreen1> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  late File? _image = null;
 
   @override
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
 
   @override
@@ -43,6 +58,7 @@ class CreateGroupEventScreen1State extends State<CreateGroupEventScreen1> {
     } else {
       _nameController.text = event.name as String;
       _descriptionController.text = event.description as String;
+      _image = event.imageFile;
     }
 
     return SafeArea(
@@ -103,6 +119,17 @@ class CreateGroupEventScreen1State extends State<CreateGroupEventScreen1> {
                   const SizedBox(
                     height: 20,
                   ),
+                  RoundedButton(
+                    title: 'Pick Image',
+                    backgroundColour: const Color(0xFF6750A4),
+                    textColour: const Color(0xFFD0BCFF),
+                    height: 40,
+                    fontSize: 16,
+                    onPressed: _pickImage,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -127,6 +154,7 @@ class CreateGroupEventScreen1State extends State<CreateGroupEventScreen1> {
                         onPressed: () {
                           event?.name = _nameController.text;
                           event?.description = _descriptionController.text;
+                          event?.imageFile = _image;
                           Navigator.pushNamed(
                               context, CreateGroupEventScreen2.id,
                               arguments: event);

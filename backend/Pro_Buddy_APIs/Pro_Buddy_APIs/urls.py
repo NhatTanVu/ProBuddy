@@ -21,6 +21,8 @@ from rest_framework_simplejwt.views import (
 )
 from buddies.views import *
 from users.views import *
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,3 +44,5 @@ urlpatterns = [
     path('api/buddy/group/event/<int:event_id>/members', ViewBuddyGroupEventMembersByEventIdAPIView.as_view(), name='buddy_view_group_event_members_by_event_id'),
     path('api/buddy/group/events/view/joined/<int:user_id>', ViewBuddyGroupEventsJoinedByUserIdAPIView.as_view(), name='buddy_view_group_events_joined_by_user_id'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

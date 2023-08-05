@@ -139,7 +139,7 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                   flex: 1,
                   child: Container(
                     margin: const EdgeInsets.all(18),
-                    padding: const EdgeInsets.fromLTRB(35, 0, 35, 0),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     decoration: BoxDecoration(
                       color: const Color(0xFF1B1C1F),
                       borderRadius: BorderRadius.circular(20),
@@ -148,7 +148,40 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const SizedBox(
-                          height: 10,
+                          height: 20,
+                        ),
+                        Visibility(
+                          visible: group.image != null,
+                          child: Container(
+                            height: 140,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(
+                                group.image ?? "",
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: group.image != null,
+                          child: Column(
+                            children: const [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Divider(
+                                color: Color(0xFFE6E6E6),
+                                thickness: 1,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -233,76 +266,122 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Row(
-                          children: [
-                            for (var event in upcomingEvents)
-                              Expanded(
-                                child: Card(
-                                  clipBehavior: Clip.antiAlias,
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, ViewGroupEventScreen.id,
-                                          arguments: event);
-                                    },
-                                    child: Container(
-                                      // decoration: const BoxDecoration(
-                                      //   image: DecorationImage(
-                                      //     fit: BoxFit.cover,
-                                      //     image: AssetImage("images/Hiking.png"),
-                                      //   ),
-                                      // ),
-                                      height: 140,
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            top: 5,
-                                            right: 5,
-                                            child: Card(
-                                              color: const Color(0xFFCAC4D0),
-                                              elevation: 5,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        5, 2, 5, 2),
-                                                child: Column(
+                        for (int i = 0; i < upcomingEvents.length; i += 2)
+                          Row(
+                            children: [
+                              for (int j = i;
+                                    (j < (i + 2)) && (j < upcomingEvents.length);
+                                    j++)
+                                    Expanded(
+                                        child: Container(
+                                          margin: const EdgeInsets.all(5.0),
+                                          child: Card(
+                                            clipBehavior: Clip.antiAlias,
+                                            elevation: 5,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: GestureDetector(
+                                              behavior: HitTestBehavior.translucent,
+                                              onTap: () {
+                                                Navigator.pushNamed(
+                                                    context, ViewGroupEventScreen.id,
+                                                    arguments: upcomingEvents[j]);
+                                              },
+                                              child: Container(
+                                                decoration: (upcomingEvents[j].image == null) ? null : BoxDecoration(
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(upcomingEvents[j].image!),
+                                                  ),
+                                                ),
+                                                height: 140,
+                                                child: Stack(
                                                   children: [
-                                                    Text(
-                                                      event.startDate!.day
-                                                          .toString(),
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xFF49454F),
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                    Positioned(
+                                                      top: 5,
+                                                      right: 5,
+                                                      child: Card(
+                                                        color: const Color(0xFFCAC4D0),
+                                                        elevation: 5,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(10),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets.fromLTRB(
+                                                                  5, 2, 5, 2),
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                upcomingEvents[j].startDate!.day
+                                                                    .toString(),
+                                                                style: const TextStyle(
+                                                                  color:
+                                                                      Color(0xFF49454F),
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                (upcomingEvents[j].startDate!.year ==
+                                                                        DateTime.now()
+                                                                            .year)
+                                                                    ? DateFormat(
+                                                                            '   MMM   ')
+                                                                        .format(upcomingEvents[j]
+                                                                            .startDate!)
+                                                                    : DateFormat(
+                                                                            'MMM yyyy')
+                                                                        .format(upcomingEvents[j]
+                                                                            .startDate!),
+                                                                style: const TextStyle(
+                                                                  color:
+                                                                      Color(0xFF49454F),
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    Text(
-                                                      (event.startDate!.year ==
-                                                              DateTime.now()
-                                                                  .year)
-                                                          ? DateFormat(
-                                                                  '   MMM   ')
-                                                              .format(event
-                                                                  .startDate!)
-                                                          : DateFormat(
-                                                                  'MMM yyyy')
-                                                              .format(event
-                                                                  .startDate!),
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xFF49454F),
-                                                        fontSize: 14,
+                                                    Positioned(
+                                                      bottom: 0,
+                                                      left: 0,
+                                                      right: 0,
+                                                      child: Container(
+                                                        color: const Color(0xAA1C1B19),
+                                                        padding: const EdgeInsets.all(5),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment.end,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              upcomingEvents[j].name!,
+                                                              overflow:
+                                                                  TextOverflow.ellipsis,
+                                                              style: const TextStyle(
+                                                                  fontSize: 16),
+                                                            ),
+                                                            const Text(
+                                                              ' - ',
+                                                              style:
+                                                                  TextStyle(fontSize: 14),
+                                                            ),
+                                                            Text(
+                                                              upcomingEvents[j].location!,
+                                                              overflow:
+                                                                  TextOverflow.ellipsis,
+                                                              style: const TextStyle(
+                                                                  fontSize: 12),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
@@ -310,50 +389,14 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                                               ),
                                             ),
                                           ),
-                                          Positioned(
-                                            bottom: 0,
-                                            left: 0,
-                                            right: 0,
-                                            child: Container(
-                                              color: const Color(0xAA1C1B19),
-                                              padding: const EdgeInsets.all(5),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text(
-                                                    event.name!,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                        fontSize: 16),
-                                                  ),
-                                                  const Text(
-                                                    ' - ',
-                                                    style:
-                                                        TextStyle(fontSize: 14),
-                                                  ),
-                                                  Text(
-                                                    event.location!,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                        fontSize: 12),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
+                              Expanded(
+                                flex: (i < upcomingEvents.length - 1) ? 0 : 1,
+                                child: Container(),
                               ),
-                          ],
-                        ),
+                            ],
+                          ),
                         Visibility(
                           visible: pastEvents.isNotEmpty,
                           child: SizedBox(
@@ -386,131 +429,137 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Row(
-                          children: [
-                            for (var event in pastEvents)
-                              Expanded(
-                                child: Card(
-                                  clipBehavior: Clip.antiAlias,
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, ViewGroupEventScreen.id,
-                                          arguments: event);
-                                    },
-                                    child: Container(
-                                      // decoration: const BoxDecoration(
-                                      //   image: DecorationImage(
-                                      //     fit: BoxFit.cover,
-                                      //     image: AssetImage("images/Hiking.png"),
-                                      //   ),
-                                      // ),
-                                      height: 140,
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            top: 5,
-                                            right: 5,
-                                            child: Card(
-                                              color: const Color(0xFFCAC4D0),
-                                              elevation: 5,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
+                        for (int i = 0; i < pastEvents.length; i += 2)
+                          Row(
+                            children: [
+                              for (int j = i;
+                              (j < (i + 2)) && (j < pastEvents.length);
+                              j++)
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.all(5.0),
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                              context, ViewGroupEventScreen.id,
+                                              arguments: pastEvents[j]);
+                                        },
+                                        child: Container(
+                                          decoration: (pastEvents[j].image == null) ? null : BoxDecoration(
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(pastEvents[j].image!),
+                                            ),
+                                          ),
+                                          height: 140,
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                top: 5,
+                                                right: 5,
+                                                child: Card(
+                                                  color: const Color(0xFFCAC4D0),
+                                                  elevation: 5,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
                                                     BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
                                                     const EdgeInsets.fromLTRB(
                                                         5, 2, 5, 2),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      event.startDate!.day
-                                                          .toString(),
-                                                      style: const TextStyle(
-                                                        color:
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          pastEvents[j].startDate!.day
+                                                              .toString(),
+                                                          style: const TextStyle(
+                                                            color:
                                                             Color(0xFF49454F),
-                                                        fontSize: 16,
-                                                        fontWeight:
+                                                            fontSize: 16,
+                                                            fontWeight:
                                                             FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      (event.startDate!.year ==
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          (pastEvents[j].startDate!.year ==
                                                               DateTime.now()
                                                                   .year)
-                                                          ? DateFormat(
-                                                                  '   MMM   ')
-                                                              .format(event
-                                                                  .startDate!)
-                                                          : DateFormat(
-                                                                  'MMM yyyy')
-                                                              .format(event
-                                                                  .startDate!),
-                                                      style: const TextStyle(
-                                                        color:
+                                                              ? DateFormat(
+                                                              '   MMM   ')
+                                                              .format(pastEvents[j]
+                                                              .startDate!)
+                                                              : DateFormat(
+                                                              'MMM yyyy')
+                                                              .format(pastEvents[j]
+                                                              .startDate!),
+                                                          style: const TextStyle(
+                                                            color:
                                                             Color(0xFF49454F),
-                                                        fontSize: 14,
-                                                      ),
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            left: 0,
-                                            right: 0,
-                                            child: Container(
-                                              color: const Color(0xAA1C1B19),
-                                              padding: const EdgeInsets.all(5),
-                                              child: Column(
-                                                mainAxisAlignment:
+                                              Positioned(
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  color: const Color(0xAA1C1B19),
+                                                  padding: const EdgeInsets.all(5),
+                                                  child: Column(
+                                                    mainAxisAlignment:
                                                     MainAxisAlignment.end,
-                                                crossAxisAlignment:
+                                                    crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text(
-                                                    event.name!,
-                                                    overflow:
+                                                    children: <Widget>[
+                                                      Text(
+                                                        pastEvents[j].name!,
+                                                        overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                        fontSize: 16),
-                                                  ),
-                                                  const Text(
-                                                    ' - ',
-                                                    style:
+                                                        style: const TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      const Text(
+                                                        ' - ',
+                                                        style:
                                                         TextStyle(fontSize: 14),
-                                                  ),
-                                                  Text(
-                                                    event.location!,
-                                                    overflow:
+                                                      ),
+                                                      Text(
+                                                        pastEvents[j].location!,
+                                                        overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                        fontSize: 12),
+                                                        style: const TextStyle(
+                                                            fontSize: 12),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
+                              Expanded(
+                                flex: (i < pastEvents.length - 1) ? 0 : 1,
+                                child: Container(),
                               ),
-                            Expanded(
-                              flex: (pastEvents.length == 1) ? 1 : 0,
-                              child: Container(),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -527,52 +576,47 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                                 Navigator.pop(context);
                               },
                             ),
-                            Visibility(
-                              visible: isOrganizer,
-                              child: RoundedButton(
-                                title: 'Create Event',
-                                backgroundColour: const Color(0xFF6750A4),
-                                textColour: const Color(0xFFD0BCFF),
-                                height: 40,
-                                width: 130,
-                                fontSize: 16,
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, CreateGroupEventScreen1.id,
-                                      arguments: group.groupId);
-                                },
-                              ),
-                            ),
-                            Visibility(
-                              visible: !isOrganizer && !isMember,
-                              child: RoundedButton(
-                                title: 'Join Group',
-                                backgroundColour: const Color(0xFF6750A4),
-                                textColour: const Color(0xFFD0BCFF),
-                                height: 40,
-                                width: 130,
-                                fontSize: 16,
-                                onPressed: () => _joinGroup(
-                                    currentUser.userId!,
-                                    group.groupId!,
-                                    currentUser.jwtToken!),
-                              ),
-                            ),
-                            Visibility(
-                              visible: !isOrganizer && isMember,
-                              child: RoundedButton(
-                                title: 'Leave Group',
-                                backgroundColour: const Color(0xFF6750A4),
-                                textColour: const Color(0xFFD0BCFF),
-                                height: 40,
-                                width: 130,
-                                fontSize: 16,
-                                onPressed: () => _leaveGroup(
-                                    currentUser.userId!,
-                                    group.groupId!,
-                                    currentUser.jwtToken!),
-                              ),
-                            ),
+                            isOrganizer
+                                ? RoundedButton(
+                                    title: 'Create Event',
+                                    backgroundColour: const Color(0xFF6750A4),
+                                    textColour: const Color(0xFFD0BCFF),
+                                    height: 40,
+                                    width: 130,
+                                    fontSize: 16,
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, CreateGroupEventScreen1.id,
+                                          arguments: group.groupId);
+                                    },
+                                  )
+                                : (!isMember)
+                                    ? RoundedButton(
+                                        title: 'Join Group',
+                                        backgroundColour:
+                                            const Color(0xFF6750A4),
+                                        textColour: const Color(0xFFD0BCFF),
+                                        height: 40,
+                                        width: 130,
+                                        fontSize: 16,
+                                        onPressed: () => _joinGroup(
+                                            currentUser.userId!,
+                                            group.groupId!,
+                                            currentUser.jwtToken!),
+                                      )
+                                    : RoundedButton(
+                                        title: 'Leave Group',
+                                        backgroundColour:
+                                            const Color(0xFF6750A4),
+                                        textColour: const Color(0xFFD0BCFF),
+                                        height: 40,
+                                        width: 130,
+                                        fontSize: 16,
+                                        onPressed: () => _leaveGroup(
+                                            currentUser.userId!,
+                                            group.groupId!,
+                                            currentUser.jwtToken!),
+                                      ),
                           ],
                         ),
                         Visibility(

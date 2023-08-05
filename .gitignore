@@ -2,3 +2,4 @@ backend/Pro_Buddy_APIs/db.sqlite3
 backend/Pro_Buddy_APIs/env/
 backend/Pro_Buddy_APIs/*/__pycache__/*
 backend/Pro_Buddy_APIs/*/migrations/
+backend/Pro_Buddy_APIs/media/

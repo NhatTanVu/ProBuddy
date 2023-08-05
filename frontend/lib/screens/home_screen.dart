@@ -145,8 +145,7 @@ class _HomeScreenState extends State<HomeScreen>
                             child: GestureDetector(
                               behavior: HitTestBehavior.translucent,
                               onTap: () {
-                                Navigator.pushNamed(
-                                    context, ProfileScreen.id,
+                                Navigator.pushNamed(context, ProfileScreen.id,
                                     arguments: _currentUser);
                               },
                               child: CircleAvatar(
@@ -157,7 +156,8 @@ class _HomeScreenState extends State<HomeScreen>
                                   backgroundColor: const Color(0xFF1c1b1f),
                                   child: Text(
                                     _initials,
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -209,12 +209,15 @@ class _HomeScreenState extends State<HomeScreen>
                                               arguments: event);
                                         },
                                         child: Container(
-                                          // decoration: const BoxDecoration(
-                                          //   image: DecorationImage(
-                                          //     fit: BoxFit.cover,
-                                          //     image: AssetImage("images/Hiking.png"),
-                                          //   ),
-                                          // ),
+                                          decoration: (event.image == null)
+                                              ? null
+                                              : BoxDecoration(
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(
+                                                        event.image!),
+                                                  ),
+                                                ),
                                           height: 140,
                                           child: Stack(
                                             children: [
@@ -366,7 +369,16 @@ class _HomeScreenState extends State<HomeScreen>
                                               context, ViewGroupScreen.id,
                                               arguments: group);
                                         },
-                                        child: SizedBox(
+                                        child: Container(
+                                          decoration: (group.image == null)
+                                              ? null
+                                              : BoxDecoration(
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(
+                                                        group.image!),
+                                                  ),
+                                                ),
                                           height: 140,
                                           child: Stack(
                                             children: [
@@ -467,7 +479,16 @@ class _HomeScreenState extends State<HomeScreen>
                                               context, ViewGroupScreen.id,
                                               arguments: group);
                                         },
-                                        child: SizedBox(
+                                        child: Container(
+                                          decoration: (group.image == null)
+                                              ? null
+                                              : BoxDecoration(
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(
+                                                        group.image!),
+                                                  ),
+                                                ),
                                           height: 140,
                                           child: Stack(
                                             children: [
@@ -535,7 +556,8 @@ class _HomeScreenState extends State<HomeScreen>
                                             ),
                                             Positioned.fill(
                                               child: Container(
-                                                padding: const EdgeInsets.all(10),
+                                                padding:
+                                                    const EdgeInsets.all(10),
                                                 child: Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
@@ -696,25 +718,34 @@ class _HomeScreenState extends State<HomeScreen>
                                                           ],
                                                         ),
                                                       ),
-                                                      // Expanded(
-                                                      //   flex: 1,
-                                                      //   child: Card(
-                                                      //     clipBehavior: Clip.antiAlias,
-                                                      //     elevation: 5,
-                                                      //     shape: RoundedRectangleBorder(
-                                                      //       borderRadius:
-                                                      //       BorderRadius.circular(
-                                                      //           10),
-                                                      //     ),
-                                                      //     child: SizedBox(
-                                                      //       height: 80,
-                                                      //       child: Image.asset(
-                                                      //         "images/friendship.jpg",
-                                                      //         fit: BoxFit.cover,
-                                                      //       ),
-                                                      //     ),
-                                                      //   ),
-                                                      // )
+                                                      (event.image != null)
+                                                          ? Expanded(
+                                                              flex: 1,
+                                                              child: Card(
+                                                                clipBehavior: Clip
+                                                                    .antiAlias,
+                                                                elevation: 5,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                child: SizedBox(
+                                                                  height: 80,
+                                                                  child: Image
+                                                                      .network(
+                                                                    event
+                                                                        .image!,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : const SizedBox
+                                                              .shrink(),
                                                     ],
                                                   ),
                                                 ),
@@ -777,25 +808,34 @@ class _HomeScreenState extends State<HomeScreen>
                                                           ],
                                                         ),
                                                       ),
-                                                      // Expanded(
-                                                      //   flex: 1,
-                                                      //   child: Card(
-                                                      //     clipBehavior: Clip.antiAlias,
-                                                      //     elevation: 5,
-                                                      //     shape: RoundedRectangleBorder(
-                                                      //       borderRadius:
-                                                      //       BorderRadius.circular(
-                                                      //           10),
-                                                      //     ),
-                                                      //     child: SizedBox(
-                                                      //       height: 80,
-                                                      //       child: Image.asset(
-                                                      //         "images/friendship.jpg",
-                                                      //         fit: BoxFit.cover,
-                                                      //       ),
-                                                      //     ),
-                                                      //   ),
-                                                      // )
+                                                      (event.image != null)
+                                                          ? Expanded(
+                                                        flex: 1,
+                                                        child: Card(
+                                                          clipBehavior: Clip
+                                                              .antiAlias,
+                                                          elevation: 5,
+                                                          shape:
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                10),
+                                                          ),
+                                                          child: SizedBox(
+                                                            height: 80,
+                                                            child: Image
+                                                                .network(
+                                                              event
+                                                                  .image!,
+                                                              fit: BoxFit
+                                                                  .cover,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                          : const SizedBox
+                                                          .shrink(),
                                                     ],
                                                   ),
                                                 ),
@@ -815,8 +855,8 @@ class _HomeScreenState extends State<HomeScreen>
                                               for (var event in _pastEvents)
                                                 ListTile(
                                                   onTap: () {
-                                                    Navigator.pushNamed(
-                                                        context, ViewGroupEventScreen.id,
+                                                    Navigator.pushNamed(context,
+                                                        ViewGroupEventScreen.id,
                                                         arguments: event);
                                                   },
                                                   textColor: Colors.white,
@@ -872,25 +912,34 @@ class _HomeScreenState extends State<HomeScreen>
                                                           ],
                                                         ),
                                                       ),
-                                                      // Expanded(
-                                                      //   flex: 1,
-                                                      //   child: Card(
-                                                      //     clipBehavior: Clip.antiAlias,
-                                                      //     elevation: 5,
-                                                      //     shape: RoundedRectangleBorder(
-                                                      //       borderRadius:
-                                                      //       BorderRadius.circular(
-                                                      //           10),
-                                                      //     ),
-                                                      //     child: SizedBox(
-                                                      //       height: 80,
-                                                      //       child: Image.asset(
-                                                      //         "images/friendship.jpg",
-                                                      //         fit: BoxFit.cover,
-                                                      //       ),
-                                                      //     ),
-                                                      //   ),
-                                                      // )
+                                                      (event.image != null)
+                                                          ? Expanded(
+                                                        flex: 1,
+                                                        child: Card(
+                                                          clipBehavior: Clip
+                                                              .antiAlias,
+                                                          elevation: 5,
+                                                          shape:
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                10),
+                                                          ),
+                                                          child: SizedBox(
+                                                            height: 80,
+                                                            child: Image
+                                                                .network(
+                                                              event
+                                                                  .image!,
+                                                              fit: BoxFit
+                                                                  .cover,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                          : const SizedBox
+                                                          .shrink(),
                                                     ],
                                                   ),
                                                 ),

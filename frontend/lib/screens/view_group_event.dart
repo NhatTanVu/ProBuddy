@@ -114,7 +114,7 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                     flex: 1,
                     child: Container(
                       margin: const EdgeInsets.all(18),
-                      padding: const EdgeInsets.fromLTRB(35, 0, 35, 0),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                       decoration: BoxDecoration(
                         color: const Color(0xFF1B1C1F),
                         borderRadius: BorderRadius.circular(20),
@@ -123,7 +123,40 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const SizedBox(
-                            height: 10,
+                            height: 20,
+                          ),
+                          Visibility(
+                            visible: groupEvent.image != null,
+                            child: Container(
+                              height: 140,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.network(
+                                  groupEvent.image ?? "",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: groupEvent.image != null,
+                            child: Column(
+                              children: const [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Divider(
+                                  color: Color(0xFFE6E6E6),
+                                  thickness: 1,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            ),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -175,51 +208,50 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                                   Navigator.pop(context);
                                 },
                               ),
-                              Visibility(
-                                visible: !isOrganizer && !isRegistered,
-                                child: RoundedButton(
-                                  title: 'Register',
-                                  backgroundColour: const Color(0xFF6750A4),
-                                  textColour: const Color(0xFFD0BCFF),
-                                  height: 40,
-                                  fontSize: 16,
-                                  onPressed: () => _registerGroupEvent(
-                                      currentUser.userId!,
-                                      groupEvent.eventId!,
-                                      currentUser.jwtToken!),
-                                ),
-                              ),
-                              Visibility(
-                                visible: !isOrganizer && isRegistered,
-                                child: RoundedButton(
-                                  title: 'Unregister',
-                                  backgroundColour: const Color(0xFF6750A4),
-                                  textColour: const Color(0xFFD0BCFF),
-                                  height: 40,
-                                  width: 120,
-                                  fontSize: 16,
-                                  onPressed: () => _unregisterGroupEvent(
-                                      currentUser.userId!,
-                                      groupEvent.eventId!,
-                                      currentUser.jwtToken!),
-                                ),
-                              ),
-                              Visibility(
-                                visible: isOrganizer,
-                                child: RoundedButton(
-                                  title: 'Edit Event',
-                                  backgroundColour: const Color(0xFF6750A4),
-                                  textColour: const Color(0xFFD0BCFF),
-                                  height: 40,
-                                  width: 130,
-                                  fontSize: 16,
-                                  onPressed: () {
-                                    // Navigator.pushNamed(
-                                    //     context, CreateGroupEventScreen1.id,
-                                    //     arguments: groupEvent.groupId);
-                                  },
-                                ),
-                              ),
+                              isOrganizer
+                                  ? RoundedButton(
+                                      title: 'Edit Event',
+                                      backgroundColour: const Color(0xFF6750A4),
+                                      textColour: const Color(0xFFD0BCFF),
+                                      height: 40,
+                                      width: 130,
+                                      fontSize: 16,
+                                      onPressed: () {
+                                        // Navigator.pushNamed(
+                                        //     context, CreateGroupEventScreen1.id,
+                                        //     arguments: groupEvent.groupId);
+                                      },
+                                    )
+                                  : !isRegistered
+                                      ? RoundedButton(
+                                          title: 'Register',
+                                          backgroundColour:
+                                              const Color(0xFF6750A4),
+                                          textColour: const Color(0xFFD0BCFF),
+                                          height: 40,
+                                          fontSize: 16,
+                                          onPressed: () => _registerGroupEvent(
+                                              currentUser.userId!,
+                                              groupEvent.eventId!,
+                                              currentUser.jwtToken!),
+                                        )
+                                      : !groupEvent.isFinished!
+                                          ? RoundedButton(
+                                              title: 'Unregister',
+                                              backgroundColour:
+                                                  const Color(0xFF6750A4),
+                                              textColour:
+                                                  const Color(0xFFD0BCFF),
+                                              height: 40,
+                                              width: 120,
+                                              fontSize: 16,
+                                              onPressed: () =>
+                                                  _unregisterGroupEvent(
+                                                      currentUser.userId!,
+                                                      groupEvent.eventId!,
+                                                      currentUser.jwtToken!),
+                                            )
+                                          : const SizedBox.shrink(),
                             ],
                           ),
                           Visibility(

@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import '../models/buddy_group.dart';
 import '../models/buddy_group_event.dart';
 import '../models/buddy_group_event_member.dart';
@@ -9,25 +11,23 @@ import 'config.dart';
 class BuddyServices {
   static const String baseUrl = Config.apiEndpoint;
 
-  static Future<BuddyGroup> createGroup(
-      String name, String description, int userId, String jwtToken) async {
+  static Future<void> createGroup(String name, String description, int userId,
+      File? image, String jwtToken) async {
     final createUrl = Uri.parse("$baseUrl/buddy/group/create");
-    http.Response response = await http.post(
-      createUrl,
-      body: {
-        'name': name,
-        'description': description,
-        'user': userId.toString(),
-      },
-      headers: {
-        'Authorization': 'Bearer $jwtToken',
-      },
-    );
+    var request = http.MultipartRequest('POST', createUrl);
+    request.headers['Authorization'] =
+        'Bearer $jwtToken'; // Add JWT token header
+    if (image != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', image.path));
+    }
+    request.fields['name'] = name;
+    request.fields['description'] = description;
+    request.fields['user'] = userId.toString();
 
+    final response = await request.send();
     if (response.statusCode == 201) {
       try {
-        BuddyGroup group = BuddyGroup.fromJson(response.body);
-        return group;
+        return;
       } catch (e) {
         throw Exception('Error when processing request');
       }
@@ -88,22 +88,26 @@ class BuddyServices {
     }
   }
 
-  static Future<BuddyGroupEvent> createGroupEvent(
+  static Future<void> createGroupEvent(
       BuddyGroupEvent buddyGroupEvent, String jwtToken) async {
     final createUrl = Uri.parse("$baseUrl/buddy/group/event/create");
-    http.Response response = await http.post(
-      createUrl,
-      body: buddyGroupEvent.toJson(),
-      headers: {
-        'Authorization': 'Bearer $jwtToken',
-        'Content-Type': 'application/json',
-      },
-    );
+    var request = http.MultipartRequest('POST', createUrl);
+    request.headers['Authorization'] =
+    'Bearer $jwtToken'; // Add JWT token header
+    if (buddyGroupEvent.imageFile != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', buddyGroupEvent.imageFile!.path));
+    }
+    request.fields['name'] = buddyGroupEvent.name ?? "";
+    request.fields['description'] = buddyGroupEvent.description ?? "";
+    request.fields['created_by'] = buddyGroupEvent.createdBy.toString();
+    request.fields['location'] = buddyGroupEvent.location ?? "";
+    request.fields['start_date'] = DateFormat('yyyy-MM-dd').format(buddyGroupEvent.startDate!);
+    request.fields['buddy_group'] = buddyGroupEvent.buddyGroup.toString();
 
+    final response = await request.send();
     if (response.statusCode == 201) {
       try {
-        BuddyGroupEvent groupEvent = BuddyGroupEvent.fromJson(response.body);
-        return groupEvent;
+        return;
       } catch (e) {
         throw Exception('Error when processing request');
       }

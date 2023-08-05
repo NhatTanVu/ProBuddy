@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../services/config.dart';
 import '../components/rounded_button.dart';
 import '../components/rounded_multiline_textbox.dart';
@@ -8,6 +9,7 @@ import '../services/buddy_services.dart';
 import '../services/auth_services.dart';
 import 'home_screen.dart';
 import 'welcome_screen.dart';
+import 'dart:io';
 
 class CreateGroupScreen extends StatefulWidget {
   static const String id = 'create_group';
@@ -21,6 +23,8 @@ class CreateGroupScreen extends StatefulWidget {
 class CreateGroupScreenState extends State<CreateGroupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  late File? _image = null;
   String _message = "";
 
   @override
@@ -30,6 +34,16 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
     super.dispose();
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
   void _createGroup() async {
     String name = _nameController.text;
     String description = _descriptionController.text;
@@ -37,7 +51,8 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
 
     try {
       await BuddyServices.createGroup(
-          name, description, currentUser.userId!, currentUser.jwtToken!);
+          name, description, currentUser.userId!,
+          _image, currentUser.jwtToken!);
       _nameController.clear();
       _descriptionController.clear();
       Navigator.pushNamed(context, HomeScreen.id);
@@ -111,6 +126,17 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
                   ),
                   const SizedBox(
                     height: 20,
+                  ),
+                  RoundedButton(
+                    title: 'Pick Image',
+                    backgroundColour: const Color(0xFF6750A4),
+                    textColour: const Color(0xFFD0BCFF),
+                    height: 40,
+                    fontSize: 16,
+                    onPressed: _pickImage,
+                  ),
+                  const SizedBox(
+                    height: 40,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

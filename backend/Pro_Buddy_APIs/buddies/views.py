@@ -13,6 +13,24 @@ class CreateBuddyGroupAPIView(generics.CreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        name = request.data.get('name')
+        description = request.data.get('description')
+        user_id = request.data.get('user')
+        image = request.FILES.get('image')
+
+        if name and description and user_id:
+            if image:
+                new_group = BuddyGroup.objects.create(
+                    image=image, name=name, description=description, user_id=user_id)
+            else:
+                new_group = BuddyGroup.objects.create(
+                    name=name, description=description, user_id=user_id)
+            serializer = CreateBuddyGroupSerializer(new_group)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class ViewBuddyGroupsCreatedByUserIdAPIView(generics.ListAPIView):
     queryset = BuddyGroup.objects.all()
@@ -27,7 +45,6 @@ class ViewBuddyGroupsCreatedByUserIdAPIView(generics.ListAPIView):
 
 class ViewBuddyGroupsJoinedByUserIdAPIView(generics.ListAPIView):
     queryset = BuddyGroup.objects.all()
-    serializer_class = ViewBuddyGroupSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -37,7 +54,8 @@ class ViewBuddyGroupsJoinedByUserIdAPIView(generics.ListAPIView):
             user__id=user_id).values_list('buddy_group__id', flat=True)
         queryset = BuddyGroup.objects.filter(
             id__in=buddy_group_ids).order_by('-created_date')
-        serializer = ViewBuddyGroupSerializer(queryset, many=True)
+        serializer = ViewBuddyGroupSerializer(queryset, many=True,
+                                              context={'request': request})
         return Response(serializer.data)
 
 
@@ -79,6 +97,27 @@ class CreateBuddyGroupEventAPIView(generics.CreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        name = request.data.get('name')
+        description = request.data.get('description')
+        start_date = request.data.get('start_date')
+        location = request.data.get('location')
+        created_by = request.data.get('created_by')
+        buddy_group = request.data.get('buddy_group')
+        image = request.FILES.get('image')
+
+        if buddy_group and created_by:
+            if image:
+                new_group = BuddyGroupEvent.objects.create(
+                    image=image, name=name, description=description, start_date=start_date, location=location, created_by_id=created_by, buddy_group_id=buddy_group)
+            else:
+                new_group = BuddyGroupEvent.objects.create(
+                    name=name, description=description, start_date=start_date, location=location, created_by_id=created_by, buddy_group_id=buddy_group)
+            serializer = CreateBuddyGroupEventSerializer(new_group)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class RegisterBuddyGroupEventAPIView(generics.CreateAPIView):
     queryset = BuddyGroupEventMember.objects.all()
@@ -117,7 +156,6 @@ class ViewBuddyGroupEventMembersByEventIdAPIView(generics.ListAPIView):
 
 class ViewBuddyGroupEventsJoinedByUserIdAPIView(generics.ListAPIView):
     queryset = BuddyGroupEvent.objects.all()
-    serializer_class = ViewBuddyGroupEventSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -127,7 +165,8 @@ class ViewBuddyGroupEventsJoinedByUserIdAPIView(generics.ListAPIView):
             user__id=user_id).values_list('buddy_group_event__id', flat=True)
         queryset = BuddyGroupEvent.objects.filter(
             id__in=buddy_group_event_ids).order_by('start_date')
-        serializer = ViewBuddyGroupEventSerializer(queryset, many=True)
+        serializer = ViewBuddyGroupEventSerializer(queryset, many=True,
+                                                   context={'request': request})
         return Response(serializer.data)
 
 

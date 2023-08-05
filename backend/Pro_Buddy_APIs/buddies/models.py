@@ -15,6 +15,7 @@ class BuddyGroup(models.Model):
     description = models.CharField(max_length=255)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='buddy_groups', null=False, blank=False)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
     
 
 class BuddyGroupMember(models.Model):
@@ -40,6 +41,7 @@ class BuddyGroupEvent(models.Model):
     meeting_link = models.CharField(max_length=255)
     is_paid = models.BooleanField(default=False)
     fee = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
 
 
 class BuddyGroupEventMember(models.Model):
