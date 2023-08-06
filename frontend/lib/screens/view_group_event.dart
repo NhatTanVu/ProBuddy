@@ -72,6 +72,21 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
     }
   }
 
+  void _deleteGroupEvent(int eventId, String jwtToken) async {
+    try {
+      await BuddyServices.deleteGroupEvent(eventId, jwtToken);
+      Navigator.pushNamed(context, HomeScreen.id);
+    } on Exception catch (e, _) {
+      if (e.toString() == Config.unauthorizedExceptionMessage) {
+        Navigator.pushNamed(context, WelcomeScreen.id);
+      } else {
+        setState(() {
+          _message = e.toString().replaceAll("Exception: ", "");
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     BuddyGroupEvent groupEvent =
@@ -210,17 +225,15 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                               ),
                               isOrganizer
                                   ? RoundedButton(
-                                      title: 'Edit Event',
-                                      backgroundColour: const Color(0xFF6750A4),
+                                      title: 'Delete Event',
+                                      backgroundColour: Colors.red.shade500,
                                       textColour: const Color(0xFFD0BCFF),
                                       height: 40,
                                       width: 130,
                                       fontSize: 16,
-                                      onPressed: () {
-                                        // Navigator.pushNamed(
-                                        //     context, CreateGroupEventScreen1.id,
-                                        //     arguments: groupEvent.groupId);
-                                      },
+                                      onPressed: () => _deleteGroupEvent(
+                                          groupEvent.eventId!,
+                                          currentUser.jwtToken!),
                                     )
                                   : !isRegistered
                                       ? RoundedButton(

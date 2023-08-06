@@ -32,6 +32,14 @@ class CreateBuddyGroupAPIView(generics.CreateAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class DeleteBuddyGroupAPIView(generics.DestroyAPIView):
+    queryset = BuddyGroup.objects.all()
+    serializer_class = ViewBuddyGroupSerializer
+    lookup_field = 'id'
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class ViewBuddyGroupsCreatedByUserIdAPIView(generics.ListAPIView):
     queryset = BuddyGroup.objects.all()
     serializer_class = ViewBuddyGroupSerializer
@@ -141,6 +149,14 @@ class UnregisterBuddyGroupEventAPIView(generics.DestroyAPIView):
         BuddyGroupEventMember.objects.filter(
             user_id=user_id, buddy_group_event_id=buddy_group_event_id).delete()
         return Response({"detail": "Successfully unregistered from the event."}, status=status.HTTP_200_OK)
+
+
+class DeleteBuddyGroupEventAPIView(generics.DestroyAPIView):
+    queryset = BuddyGroupEvent.objects.all()
+    serializer_class = CreateBuddyGroupEventSerializer
+    lookup_field = 'id'
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class ViewBuddyGroupEventMembersByEventIdAPIView(generics.ListAPIView):
