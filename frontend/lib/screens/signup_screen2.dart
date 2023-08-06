@@ -19,7 +19,6 @@ class SignUpScreen2 extends StatefulWidget {
 class _SignUpScreen2State extends State<SignUpScreen2> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
-  String _gender = 'M';
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +28,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
       signUpUser = AuthUser.fromEmpty();
     } else {
       _addressController.text = signUpUser.address as String;
-      if (signUpUser.gender != null) {
-        _gender = signUpUser.gender as String;
-      }
+      signUpUser.gender ??= 'M';
       if (signUpUser.dob != null) {
         _dobController.text =
             DateFormat('yyyy-MM-dd').format(signUpUser.dob as DateTime);
@@ -100,10 +97,10 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                               fillColor: MaterialStateColor.resolveWith(
                                   (states) => const Color(0xFFE6E6E6)),
                               value: 'F',
-                              groupValue: _gender,
+                              groupValue: signUpUser?.gender,
                               onChanged: (value) {
                                 setState(() {
-                                  _gender = value!;
+                                  signUpUser?.gender = value!;
                                 });
                               },
                             ),
@@ -126,10 +123,10 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                               fillColor: MaterialStateColor.resolveWith(
                                   (states) => const Color(0xFFE6E6E6)),
                               value: 'M',
-                              groupValue: _gender,
+                              groupValue: signUpUser?.gender,
                               onChanged: (value) {
                                 setState(() {
-                                  _gender = value!;
+                                  signUpUser?.gender = value!;
                                 });
                               },
                             ),
@@ -170,7 +167,6 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                                 ? DateFormat('yyyy-MM-dd')
                                     .parse(_dobController.text)
                                 : null;
-                            signUpUser?.gender = _gender;
                             Navigator.pushNamed(context, SignUpScreen1.id,
                                 arguments: signUpUser);
                           },
@@ -187,7 +183,6 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                                 ? DateFormat('yyyy-MM-dd')
                                     .parse(_dobController.text)
                                 : null;
-                            signUpUser?.gender = _gender;
                             Navigator.pushNamed(context, SignUpScreen3.id,
                                 arguments: signUpUser);
                           },

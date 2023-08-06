@@ -73,7 +73,7 @@ class _SignUpScreen0State extends State<SignUpScreen0> {
                       thickness: 1,
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     RoundedTextField(
                       controller: _usernameController,

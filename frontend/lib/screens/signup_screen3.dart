@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
@@ -30,9 +33,11 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
   ];
   late List<String> _selectedActivities;
   late List<String> _selectedServices;
+  final ImagePicker _picker = ImagePicker();
   String _message = "";
+  late AuthUser? _signUpUser;
 
-  void _signUpUser(AuthUser? signUpUser, BuildContext context) async {
+  void _signUp(AuthUser? signUpUser, BuildContext context) async {
     try {
       await AuthServices.signUp(signUpUser as AuthUser);
       await AuthServices.login(signUpUser.userName as String, signUpUser.password as String);
@@ -44,18 +49,32 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
     }
   }
 
+  Future<void> _pickImage() async {
+    _signUpUser?.userInterests = _selectedActivities;
+    _signUpUser?.userServices = _selectedServices;
+
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _signUpUser?.imageFile = File(pickedFile.path);
+
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    AuthUser? signUpUser =
+    _signUpUser =
         ModalRoute.of(context)?.settings.arguments as AuthUser?;
-    if (signUpUser == null) {
-      signUpUser = AuthUser.fromEmpty();
+    if (_signUpUser == null) {
+      _signUpUser = AuthUser.fromEmpty();
     } else {
       _selectedActivities =
-          signUpUser.userInterests?.map((e) => e.toString()).toList() ??
+          _signUpUser?.userInterests?.map((e) => e.toString()).toList() ??
               <String>[];
       _selectedServices =
-          signUpUser.userServices?.map((e) => e.toString()).toList() ??
+          _signUpUser?.userServices?.map((e) => e.toString()).toList() ??
               <String>[];
     }
 
@@ -99,10 +118,10 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                       thickness: 1,
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     const Text(
-                        'Which activities would you like to do with friends?'),
+                        'Preferred activities:'),
                     const SizedBox(
                       height: 10,
                     ),
@@ -119,7 +138,7 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                     const SizedBox(
                       height: 20,
                     ),
-                    const Text('Which services would you like to provide?'),
+                    const Text('Provided services:'),
                     const SizedBox(
                       height: 10,
                     ),
@@ -135,6 +154,17 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                     const SizedBox(
                       height: 20,
                     ),
+                    RoundedButton(
+                      title: 'Pick Image',
+                      backgroundColour: const Color(0xFF6750A4),
+                      textColour: const Color(0xFFD0BCFF),
+                      height: 40,
+                      fontSize: 16,
+                      onPressed: _pickImage,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -145,10 +175,10 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                           height: 40,
                           fontSize: 16,
                           onPressed: () {
-                            signUpUser?.userInterests = _selectedActivities;
-                            signUpUser?.userServices = _selectedServices;
+                            _signUpUser?.userInterests = _selectedActivities;
+                            _signUpUser?.userServices = _selectedServices;
                             Navigator.pushNamed(context, SignUpScreen2.id,
-                                arguments: signUpUser);
+                                arguments: _signUpUser);
                           },
                         ),
                         RoundedButton(
@@ -158,9 +188,9 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                           height: 40,
                           fontSize: 16,
                           onPressed: () {
-                            signUpUser?.userInterests = _selectedActivities;
-                            signUpUser?.userServices = _selectedServices;
-                            _signUpUser(signUpUser, context);
+                            _signUpUser?.userInterests = _selectedActivities;
+                            _signUpUser?.userServices = _selectedServices;
+                            _signUp(_signUpUser, context);
                           },
                         )
                       ],

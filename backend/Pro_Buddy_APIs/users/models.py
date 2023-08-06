@@ -14,6 +14,7 @@ class User(AbstractUser):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     date_of_birth = models.DateField()
     address = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
 
 
 class UserInterest(models.Model):

@@ -59,6 +59,28 @@ class ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(
                           height: 10,
                         ),
+                        (_currentUser.image != null)
+                            ? CircleAvatar(
+                                radius: 50,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 48,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image:
+                                            NetworkImage(_currentUser.image!),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Text(
                           "${_currentUser.firstName} ${_currentUser.lastName}",
                           style: const TextStyle(fontSize: 20),
@@ -76,7 +98,6 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

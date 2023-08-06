@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int _selectedIndex = 0;
-  late AuthUser _currentUser;
+  late AuthUser _currentUser = AuthUser.fromEmpty();
   late String _initials = '';
   late List<BuddyGroup> _createdGroups = [];
   late int _numOfCreatedGroups = 0;
@@ -140,28 +140,48 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                         ),
                         Positioned(
-                            right: 10,
-                            top: 5,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: () {
-                                Navigator.pushNamed(context, ProfileScreen.id,
-                                    arguments: _currentUser);
-                              },
-                              child: CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Colors.white,
-                                child: CircleAvatar(
-                                  radius: 18,
-                                  backgroundColor: const Color(0xFF1c1b1f),
-                                  child: Text(
-                                    _initials,
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                          right: 10,
+                          top: 5,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              Navigator.pushNamed(context, ProfileScreen.id,
+                                  arguments: _currentUser);
+                            },
+                            child: (_currentUser.image == null)
+                                ? CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Colors.white,
+                                    child: CircleAvatar(
+                                      radius: 18,
+                                      backgroundColor: const Color(0xFF1c1b1f),
+                                      child: Text(
+                                        _initials,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Colors.white,
+                                    child: CircleAvatar(
+                                      radius: 18,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                _currentUser.image!),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            )),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -810,32 +830,32 @@ class _HomeScreenState extends State<HomeScreen>
                                                       ),
                                                       (event.image != null)
                                                           ? Expanded(
-                                                        flex: 1,
-                                                        child: Card(
-                                                          clipBehavior: Clip
-                                                              .antiAlias,
-                                                          elevation: 5,
-                                                          shape:
-                                                          RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                10),
-                                                          ),
-                                                          child: SizedBox(
-                                                            height: 80,
-                                                            child: Image
-                                                                .network(
-                                                              event
-                                                                  .image!,
-                                                              fit: BoxFit
-                                                                  .cover,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
+                                                              flex: 1,
+                                                              child: Card(
+                                                                clipBehavior: Clip
+                                                                    .antiAlias,
+                                                                elevation: 5,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                child: SizedBox(
+                                                                  height: 80,
+                                                                  child: Image
+                                                                      .network(
+                                                                    event
+                                                                        .image!,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            )
                                                           : const SizedBox
-                                                          .shrink(),
+                                                              .shrink(),
                                                     ],
                                                   ),
                                                 ),
@@ -914,32 +934,32 @@ class _HomeScreenState extends State<HomeScreen>
                                                       ),
                                                       (event.image != null)
                                                           ? Expanded(
-                                                        flex: 1,
-                                                        child: Card(
-                                                          clipBehavior: Clip
-                                                              .antiAlias,
-                                                          elevation: 5,
-                                                          shape:
-                                                          RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                10),
-                                                          ),
-                                                          child: SizedBox(
-                                                            height: 80,
-                                                            child: Image
-                                                                .network(
-                                                              event
-                                                                  .image!,
-                                                              fit: BoxFit
-                                                                  .cover,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
+                                                              flex: 1,
+                                                              child: Card(
+                                                                clipBehavior: Clip
+                                                                    .antiAlias,
+                                                                elevation: 5,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                child: SizedBox(
+                                                                  height: 80,
+                                                                  child: Image
+                                                                      .network(
+                                                                    event
+                                                                        .image!,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            )
                                                           : const SizedBox
-                                                          .shrink(),
+                                                              .shrink(),
                                                     ],
                                                   ),
                                                 ),

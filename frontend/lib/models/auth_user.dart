@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:intl/intl.dart';
 
 class AuthUser {
@@ -13,8 +14,10 @@ class AuthUser {
   String? gender;
   DateTime? dob;
   String? address;
-  List<dynamic>? userInterests;
-  List<dynamic>? userServices;
+  List<String>? userInterests;
+  List<String>? userServices;
+  String? image;
+  File? imageFile;
 
   AuthUser(
       {required this.userId,
@@ -29,7 +32,9 @@ class AuthUser {
       required this.dob,
       required this.address,
       required this.userInterests,
-      required this.userServices});
+      required this.userServices,
+      this.image,
+      this.imageFile});
 
   AuthUser.fromEmpty()
       : userId = null,
@@ -44,12 +49,14 @@ class AuthUser {
         dob = null,
         address = "",
         userInterests = null,
-        userServices = null;
+        userServices = null,
+        image = null,
+        imageFile = null;
 
   factory AuthUser.fromJson(String jsonString) {
     var json = jsonDecode(jsonString);
-    var interests = json['interests'];
-    var services = json['services'];
+    var interests = json['interests'] as List<dynamic>;
+    var services = json['services'] as List<dynamic>;
 
     return AuthUser(
         userId: json['id'],
@@ -62,8 +69,9 @@ class AuthUser {
         gender: json['gender'],
         dob: DateTime.parse(json['date_of_birth']),
         address: json['address'],
-        userInterests: interests,
-        userServices: services);
+        userInterests: interests.map((item) => item.toString()).toList(),
+        userServices: services.map((item) => item.toString()).toList(),
+        image: json['image']);
   }
 
   String toJson() {
@@ -80,7 +88,8 @@ class AuthUser {
       'date_of_birth': DateFormat('yyyy-MM-dd').format(dob!),
       'address': address,
       'interests': userInterests,
-      'services': userServices
+      'services': userServices,
+      'image': image
     };
     if (obj["id"] == null) {
       obj.remove("id");

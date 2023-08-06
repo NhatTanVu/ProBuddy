@@ -14,14 +14,15 @@ class SignUpUserAPIView(generics.CreateAPIView):
     serializer_class = CreateUserSerializer
 
     def perform_create(self, serializer):
-        # Save user interests
-        interests = self.request.data.get('interests', [])
-        services = self.request.data.get('services', [])
+        interests = self.request.data.get('interests', '').split(',')
+        services = self.request.data.get('services', '').split(',')
         user = serializer.save()
         for interest in interests:
-            UserInterest.objects.create(user=user, name=interest)
+            if (interest != ''):
+                UserInterest.objects.create(user=user, name=interest)
         for service in services:
-            UserService.objects.create(user=user, name=service)
+            if (service != ''):
+                UserService.objects.create(user=user, name=service)
 
 
 class UserRetrieveAPIView(generics.RetrieveAPIView):
@@ -50,7 +51,7 @@ class LoginUserAPIView(generics.CreateAPIView):
             response_data = {
                 'access': str(refresh.access_token),
                 'refresh': str(refresh),
-                **GetUserDetailsSerializer(user).data
+                **GetUserDetailsSerializer(user, context={'request': request}).data
             }
             return Response(response_data)
         else:

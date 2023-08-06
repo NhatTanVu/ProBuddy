@@ -23,7 +23,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'email', 'first_name',
                   'last_name', 'interests', 'services',
-                  'gender', 'date_of_birth', 'address', 'password')
+                  'gender', 'date_of_birth', 'address', 'password', 'image')
         extra_kwargs = {'password': {'write_only': True},
                         'is_superuser': {'read_only': True},
                         'is_staff': {'read_only': True},
@@ -45,4 +45,4 @@ class GetUserDetailsSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'email', 'first_name',
                   'last_name', 'interests', 'services',
-                  'gender', 'date_of_birth', 'address')
+                  'gender', 'date_of_birth', 'address', 'image')
