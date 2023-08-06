@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pro_buddy/models/buddy_group_event.dart';
 import 'package:pro_buddy/models/buddy_group_event_member.dart';
 import '../models/auth_user.dart';
@@ -6,7 +7,6 @@ import '../services/auth_services.dart';
 import '../services/buddy_services.dart';
 import '../services/config.dart';
 import 'home_screen.dart';
-import 'view_group.dart';
 import '../components/rounded_button.dart';
 import 'welcome_screen.dart';
 
@@ -75,6 +75,21 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
   void _deleteGroupEvent(int eventId, String jwtToken) async {
     try {
       await BuddyServices.deleteGroupEvent(eventId, jwtToken);
+      Navigator.pushNamed(context, HomeScreen.id);
+    } on Exception catch (e, _) {
+      if (e.toString() == Config.unauthorizedExceptionMessage) {
+        Navigator.pushNamed(context, WelcomeScreen.id);
+      } else {
+        setState(() {
+          _message = e.toString().replaceAll("Exception: ", "");
+        });
+      }
+    }
+  }
+
+  void _finishGroupEvent(int eventId, String jwtToken) async {
+    try {
+      await BuddyServices.finishGroupEvent(eventId, jwtToken);
       Navigator.pushNamed(context, HomeScreen.id);
     } on Exception catch (e, _) {
       if (e.toString() == Config.unauthorizedExceptionMessage) {
@@ -176,15 +191,21 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Flexible(
-                                flex: 1,
-                                child: Text(
-                                  groupEvent.name!,
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                              Text(
+                                groupEvent.name!,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
                               ),
+                              groupEvent.isFinished!
+                                  ? const SizedBox(width: 10)
+                                  : const SizedBox.shrink(),
+                              groupEvent.isFinished!
+                                  ? const Icon(
+                                      Icons.check_circle,
+                                      size: 20,
+                                      color: Colors.greenAccent,
+                                    )
+                                  : const SizedBox.shrink(),
                             ],
                           ),
                           const SizedBox(
@@ -208,10 +229,48 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                             ],
                           ),
                           const SizedBox(
+                            height: 10,
+                          ),
+                          const Divider(
+                            color: Color(0xFFE6E6E6),
+                            thickness: 0.5,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          (groupEvent.startDate != null)
+                              ? Row(
+                                  children: [
+                                    Flexible(
+                                      flex: 1,
+                                      child: Text(
+                                        'Start Date: ${DateFormat('yyyy-MM-dd').format(groupEvent.startDate!)}',
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox.shrink(),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Flexible(
+                                flex: 1,
+                                child: Text(
+                                  (groupEvent.endDate == null)
+                                      ? 'End Date: N/A'
+                                      : 'End Date: ${DateFormat('yyyy-MM-dd').format(groupEvent.endDate!)}',
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
                             height: 20,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               RoundedButton(
                                 title: 'Go Back',
@@ -224,24 +283,50 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                                 },
                               ),
                               isOrganizer
-                                  ? RoundedButton(
-                                      title: 'Delete Event',
-                                      backgroundColour: Colors.red.shade500,
-                                      textColour: const Color(0xFFD0BCFF),
-                                      height: 40,
-                                      width: 130,
-                                      fontSize: 16,
-                                      onPressed: () => _deleteGroupEvent(
-                                          groupEvent.eventId!,
-                                          currentUser.jwtToken!),
+                                  ? Column(
+                                      children: [
+                                        (!groupEvent.isFinished!)
+                                            ? RoundedButton(
+                                                title: 'Finish Event',
+                                                backgroundColour:
+                                                    const Color(0xFF6750A4),
+                                                textColour:
+                                                    const Color(0xFFD0BCFF),
+                                                height: 40,
+                                                width: 130,
+                                                fontSize: 16,
+                                                onPressed: () =>
+                                                    _finishGroupEvent(
+                                                        groupEvent.eventId!,
+                                                        currentUser.jwtToken!),
+                                              )
+                                            : const SizedBox.shrink(),
+                                        (!groupEvent.isFinished!)
+                                            ? const SizedBox(
+                                                height: 20,
+                                              )
+                                            : const SizedBox.shrink(),
+                                        RoundedButton(
+                                          title: 'Delete Event',
+                                          backgroundColour: Colors.red.shade500,
+                                          textColour: const Color(0xFFD0BCFF),
+                                          height: 40,
+                                          width: 130,
+                                          fontSize: 16,
+                                          onPressed: () => _deleteGroupEvent(
+                                              groupEvent.eventId!,
+                                              currentUser.jwtToken!),
+                                        ),
+                                      ],
                                     )
                                   : !isRegistered
                                       ? RoundedButton(
-                                          title: 'Register',
+                                          title: 'Join Event',
                                           backgroundColour:
                                               const Color(0xFF6750A4),
                                           textColour: const Color(0xFFD0BCFF),
                                           height: 40,
+                                          width: 120,
                                           fontSize: 16,
                                           onPressed: () => _registerGroupEvent(
                                               currentUser.userId!,
@@ -250,9 +335,9 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                                         )
                                       : !groupEvent.isFinished!
                                           ? RoundedButton(
-                                              title: 'Unregister',
+                                              title: 'Drop Event',
                                               backgroundColour:
-                                                  const Color(0xFF6750A4),
+                                                  Colors.red.shade500,
                                               textColour:
                                                   const Color(0xFFD0BCFF),
                                               height: 40,

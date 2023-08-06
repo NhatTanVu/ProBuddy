@@ -120,7 +120,7 @@ class CreateGroupEventScreen1State extends State<CreateGroupEventScreen1> {
                     height: 20,
                   ),
                   RoundedButton(
-                    title: 'Pick Image',
+                    title: 'Upload Photo',
                     backgroundColour: const Color(0xFF6750A4),
                     textColour: const Color(0xFFD0BCFF),
                     height: 40,
@@ -142,7 +142,7 @@ class CreateGroupEventScreen1State extends State<CreateGroupEventScreen1> {
                         onPressed: () {
                           _nameController.clear();
                           _descriptionController.clear();
-                          Navigator.pushNamed(context, HomeScreen.id);
+                          Navigator.pop(context);
                         },
                       ),
                       RoundedButton(

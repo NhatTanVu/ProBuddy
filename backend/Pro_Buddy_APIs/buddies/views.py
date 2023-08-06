@@ -109,6 +109,7 @@ class CreateBuddyGroupEventAPIView(generics.CreateAPIView):
         name = request.data.get('name')
         description = request.data.get('description')
         start_date = request.data.get('start_date')
+        end_date = request.data.get('end_date')
         location = request.data.get('location')
         created_by = request.data.get('created_by')
         buddy_group = request.data.get('buddy_group')
@@ -117,10 +118,14 @@ class CreateBuddyGroupEventAPIView(generics.CreateAPIView):
         if buddy_group and created_by:
             if image:
                 new_group = BuddyGroupEvent.objects.create(
-                    image=image, name=name, description=description, start_date=start_date, location=location, created_by_id=created_by, buddy_group_id=buddy_group)
+                    image=image, name=name, description=description,
+                    start_date=start_date, end_date=end_date, location=location,
+                    created_by_id=created_by, buddy_group_id=buddy_group)
             else:
                 new_group = BuddyGroupEvent.objects.create(
-                    name=name, description=description, start_date=start_date, location=location, created_by_id=created_by, buddy_group_id=buddy_group)
+                    name=name, description=description,
+                    start_date=start_date, end_date=end_date, location=location,
+                    created_by_id=created_by, buddy_group_id=buddy_group)
             serializer = CreateBuddyGroupEventSerializer(new_group)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
@@ -157,6 +162,30 @@ class DeleteBuddyGroupEventAPIView(generics.DestroyAPIView):
     lookup_field = 'id'
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+
+class UpdateBuddyGroupEventView(generics.UpdateAPIView):
+    queryset = BuddyGroupEvent.objects.all()
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        event_id = kwargs.get('id')
+        if event_id is None:
+            return Response({"detail": "Event Id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            buddy_group_event = BuddyGroupEvent.objects.get(id=event_id)
+        except BuddyGroupEvent.DoesNotExist:
+            return Response({"detail": "Event not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ViewBuddyGroupEventSerializer(
+            buddy_group_event, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"detail": "Successfully update the event."}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ViewBuddyGroupEventMembersByEventIdAPIView(generics.ListAPIView):

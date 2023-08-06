@@ -139,11 +139,8 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
           List<BuddyGroupEvent> upcomingEvents =
               group.events.where((element) => !element.isFinished!).toList();
           upcomingEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
-          upcomingEvents = upcomingEvents.take(2).toList();
-          List<BuddyGroupEvent> pastEvents = group.events
-              .where((element) => element.isFinished!)
-              .take(2)
-              .toList();
+          List<BuddyGroupEvent> pastEvents =
+              group.events.where((element) => element.isFinished!).toList();
           bool isOrganizer = group.createdBy.userId == currentUser.userId;
           bool isMember = group.memberIds.contains(currentUser.userId!);
 
@@ -265,22 +262,10 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
+                                    children: const [
+                                      Text(
                                         'Upcoming Events',
                                         style: TextStyle(fontSize: 20),
-                                      ),
-                                      Visibility(
-                                        visible: upcomingEvents.length > 2,
-                                        child: InkWell(
-                                          onTap: () {},
-                                          child: const Text(
-                                            'See all',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.blue),
-                                          ),
-                                        ),
                                       ),
                                     ],
                                   ),
@@ -477,22 +462,10 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
+                                    children: const [
+                                      Text(
                                         'Past Events',
                                         style: TextStyle(fontSize: 20),
-                                      ),
-                                      Visibility(
-                                        visible: pastEvents.length > 2,
-                                        child: InkWell(
-                                          onTap: () {},
-                                          child: const Text(
-                                            'See all',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.blue),
-                                          ),
-                                        ),
                                       ),
                                     ],
                                   ),
@@ -747,7 +720,7 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                                             : RoundedButton(
                                                 title: 'Leave Group',
                                                 backgroundColour:
-                                                    const Color(0xFF6750A4),
+                                                    Colors.red.shade500,
                                                 textColour:
                                                     const Color(0xFFD0BCFF),
                                                 height: 40,

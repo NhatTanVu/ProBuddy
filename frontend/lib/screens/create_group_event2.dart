@@ -23,6 +23,7 @@ class CreateGroupEventScreen2 extends StatefulWidget {
 
 class CreateGroupEventScreen2State extends State<CreateGroupEventScreen2> {
   final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
   String _message = "";
@@ -30,6 +31,7 @@ class CreateGroupEventScreen2State extends State<CreateGroupEventScreen2> {
   @override
   void dispose() {
     _startDateController.dispose();
+    _endDateController.dispose();
     _locationController.dispose();
     super.dispose();
   }
@@ -37,15 +39,18 @@ class CreateGroupEventScreen2State extends State<CreateGroupEventScreen2> {
   void _createGroupEvent(BuddyGroupEvent event) async {
     DateTime startDate =
         DateFormat('yyyy-MM-dd').parse(_startDateController.text);
+    DateTime endDate = DateFormat('yyyy-MM-dd').parse(_endDateController.text);
     String location = _locationController.text;
     AuthUser currentUser = await AuthServices.loadUser();
     event.startDate = startDate;
+    event.endDate = endDate;
     event.location = location;
     event.createdBy = currentUser.userId;
 
     try {
       await BuddyServices.createGroupEvent(event, currentUser.jwtToken!);
       _startDateController.clear();
+      _endDateController.clear();
       _locationController.clear();
       Navigator.pushNamed(context, HomeScreen.id);
     } on Exception catch (e, _) {
@@ -69,6 +74,10 @@ class CreateGroupEventScreen2State extends State<CreateGroupEventScreen2> {
       if (event.startDate != null) {
         _startDateController.text =
             DateFormat('yyyy-MM-dd').format(event.startDate as DateTime);
+      }
+      if (event.endDate != null) {
+        _endDateController.text =
+            DateFormat('yyyy-MM-dd').format(event.endDate as DateTime);
       }
       _locationController.text = event.location as String;
     }
@@ -113,6 +122,10 @@ class CreateGroupEventScreen2State extends State<CreateGroupEventScreen2> {
                     hintText: 'Start Date',
                     controller: _startDateController,
                   ),
+                  DateTimePicker(
+                    hintText: 'End Date',
+                    controller: _endDateController,
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -140,6 +153,10 @@ class CreateGroupEventScreen2State extends State<CreateGroupEventScreen2> {
                           event?.startDate = (_startDateController.text != "")
                               ? DateFormat('yyyy-MM-dd')
                                   .parse(_startDateController.text)
+                              : null;
+                          event?.endDate = (_endDateController.text != "")
+                              ? DateFormat('yyyy-MM-dd')
+                                  .parse(_endDateController.text)
                               : null;
                           event?.location = _locationController.text;
                           Navigator.pushNamed(

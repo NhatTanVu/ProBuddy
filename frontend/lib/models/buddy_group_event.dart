@@ -48,6 +48,9 @@ class BuddyGroupEvent {
         name: json['name'],
         description: json['description'],
         startDate: DateTime.parse(json['start_date']),
+        endDate: (json['end_date'] != null)
+            ? DateTime.parse(json['end_date'])
+            : null,
         location: json['location'],
         image: json['image'],
         createdBy: json['created_by'],

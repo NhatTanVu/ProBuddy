@@ -126,6 +126,8 @@ class BuddyServices {
     request.fields['location'] = buddyGroupEvent.location ?? "";
     request.fields['start_date'] =
         DateFormat('yyyy-MM-dd').format(buddyGroupEvent.startDate!);
+    request.fields['end_date'] =
+        DateFormat('yyyy-MM-dd').format(buddyGroupEvent.endDate!);
     request.fields['buddy_group'] = buddyGroupEvent.buddyGroup.toString();
 
     final response = await request.send();
@@ -211,6 +213,30 @@ class BuddyServices {
       throw Exception('Unauthorized access');
     } else {
       throw Exception('Delete event failed');
+    }
+  }
+
+  static Future<void> finishGroupEvent(int eventId, String jwtToken) async {
+    final updateUrl = Uri.parse("$baseUrl/buddy/group/event/update/$eventId");
+    http.Response response = await http.patch(
+      updateUrl,
+      body: jsonEncode({"is_finished": true}),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        return;
+      } catch (e) {
+        throw Exception('Error when processing request');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized access');
+    } else {
+      throw Exception('Finish event failed');
     }
   }
 

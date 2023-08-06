@@ -155,7 +155,7 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                       height: 20,
                     ),
                     RoundedButton(
-                      title: 'Pick Image',
+                      title: 'Upload Photo',
                       backgroundColour: const Color(0xFF6750A4),
                       textColour: const Color(0xFFD0BCFF),
                       height: 40,
