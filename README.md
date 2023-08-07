@@ -8,16 +8,13 @@ A cross-platform mobile app for connecting individuals for fun and professional 
 2. Open command line, and run:
 ```
   1. cd backend\Pro_Buddy_APIs
-  2. py -m venv env
+  2. python -m venv env
   3. env\Scripts\activate
   4. pip install -r requirements.txt
 ```
-3. Open MySQL and create DB named "**pro_buddy**"
+3. Open MySQL and create DB named "**pro_buddy**" with **Charset='utf8'**
 4. Go back to command line, and run:
 ```
-  manage.py migrate
-```
-5. Go back to command line, and run:
-```   
-  manage.py runserver
+  python manage.py migrate
+  python manage.py runserver
 ```
