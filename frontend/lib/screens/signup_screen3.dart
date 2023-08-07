@@ -40,7 +40,8 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
   void _signUp(AuthUser? signUpUser, BuildContext context) async {
     try {
       await AuthServices.signUp(signUpUser as AuthUser);
-      await AuthServices.login(signUpUser.userName as String, signUpUser.password as String);
+      await AuthServices.login(
+          signUpUser.userName as String, signUpUser.password as String);
       Navigator.pushNamed(context, HomeScreen.id);
     } on Exception catch (e, _) {
       setState(() {
@@ -58,15 +59,13 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
     if (pickedFile != null) {
       setState(() {
         _signUpUser?.imageFile = File(pickedFile.path);
-
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    _signUpUser =
-        ModalRoute.of(context)?.settings.arguments as AuthUser?;
+    _signUpUser = ModalRoute.of(context)?.settings.arguments as AuthUser?;
     if (_signUpUser == null) {
       _signUpUser = AuthUser.fromEmpty();
     } else {
@@ -120,12 +119,20 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Text(
-                        'Preferred activities:'),
+                    const Text('Preferred activities:'),
                     const SizedBox(
                       height: 10,
                     ),
                     MultiSelectDialogField(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      buttonIcon: const Icon(
+                        Icons.arrow_downward,
+                        color: Colors.white,
+                      ),
                       initialValue: _selectedActivities,
                       items: _activities
                           .map((e) => MultiSelectItem(e, e))
@@ -143,6 +150,15 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                       height: 10,
                     ),
                     MultiSelectDialogField(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      buttonIcon: const Icon(
+                        Icons.arrow_downward,
+                        color: Colors.white,
+                      ),
                       initialValue: _selectedServices,
                       items:
                           _services.map((e) => MultiSelectItem(e, e)).toList(),
