@@ -661,7 +661,7 @@ class ViewGroupScreenState extends State<ViewGroupScreen> {
                                       height: 40,
                                       fontSize: 16,
                                       onPressed: () {
-                                        Navigator.pop(context);
+                                        Navigator.pushNamed(context, HomeScreen.id);
                                       },
                                     ),
                                     isOrganizer

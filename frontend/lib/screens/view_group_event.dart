@@ -8,6 +8,7 @@ import '../services/buddy_services.dart';
 import '../services/config.dart';
 import 'home_screen.dart';
 import '../components/rounded_button.dart';
+import 'view_group.dart';
 import 'welcome_screen.dart';
 
 class ViewGroupEventScreen extends StatefulWidget {
@@ -279,7 +280,9 @@ class ViewGroupEventScreenState extends State<ViewGroupEventScreen> {
                                 height: 40,
                                 fontSize: 16,
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Navigator.pushNamed(
+                                      context, ViewGroupScreen.id,
+                                      arguments: groupEvent.buddyGroup);
                                 },
                               ),
                               isOrganizer

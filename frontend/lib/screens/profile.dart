@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/rounded_button.dart';
 import '../models/auth_user.dart';
 import '../services/auth_services.dart';
+import 'home_screen.dart';
 import 'welcome_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -108,7 +109,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         height: 40,
                         fontSize: 16,
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.pushNamed(context, HomeScreen.id);
                         },
                       ),
                       RoundedButton(

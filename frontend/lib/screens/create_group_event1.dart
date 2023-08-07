@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pro_buddy/models/buddy_group_event.dart';
+import 'package:pro_buddy/screens/view_group.dart';
 import '../components/rounded_button.dart';
 import '../components/rounded_multiline_textbox.dart';
 import '../components/rounded_textbox.dart';
@@ -142,7 +143,8 @@ class CreateGroupEventScreen1State extends State<CreateGroupEventScreen1> {
                         onPressed: () {
                           _nameController.clear();
                           _descriptionController.clear();
-                          Navigator.pop(context);
+                          Navigator.pushNamed(context, ViewGroupScreen.id,
+                              arguments: event?.buddyGroup);
                         },
                       ),
                       RoundedButton(

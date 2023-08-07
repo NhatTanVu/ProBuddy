@@ -5,6 +5,7 @@ import '../models/buddy_group.dart';
 import '../services/auth_services.dart';
 import '../services/buddy_services.dart';
 import '../services/config.dart';
+import 'home_screen.dart';
 import 'view_group.dart';
 import 'welcome_screen.dart';
 
@@ -118,12 +119,15 @@ class ViewAllGroupsScreenState extends State<ViewAllGroupsScreen> {
                                       arguments: _allGroups[j]);
                                 },
                                 child: Container(
-                                  decoration: (_allGroups[j].image == null) ? null : BoxDecoration(
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(_allGroups[j].image!),
-                                    ),
-                                  ),
+                                  decoration: (_allGroups[j].image == null)
+                                      ? null
+                                      : BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                _allGroups[j].image!),
+                                          ),
+                                        ),
                                   height: 140,
                                   child: Stack(
                                     children: [
@@ -178,7 +182,7 @@ class ViewAllGroupsScreenState extends State<ViewAllGroupsScreen> {
                       height: 40,
                       fontSize: 16,
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, HomeScreen.id);
                       },
                     ),
                   ],
