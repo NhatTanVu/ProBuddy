@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'ProBuddy',
       initialRoute: WelcomeScreen.id,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0x001c1b1f),
         textTheme: const TextTheme(
