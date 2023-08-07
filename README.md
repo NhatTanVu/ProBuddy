@@ -5,7 +5,7 @@ A cross-platform mobile app for connecting individuals for fun and professional 
 2. Open "**frontend**" folder on Android Studio and run the mobile app
 # Setup backend (Django REST Framework + VS Code)
 1. Install Python
-2. Open command line, and run:
+2. Open command line on **backend** folder, and run:
 ```
   1. cd backend\Pro_Buddy_APIs
   2. python -m venv env
