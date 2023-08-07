@@ -15,6 +15,6 @@ A cross-platform mobile app for connecting individuals for fun and professional 
 3. Open MySQL and create DB named "**pro_buddy**" with **Charset='utf8'**
 4. Go back to command line, and run:
 ```
-  python manage.py migrate
-  python manage.py runserver
+  5. python manage.py migrate
+  6. python manage.py runserver
 ```
